@@ -1,0 +1,1028 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-27 22:55+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/interface.c:34
+msgid "E_xit"
+msgstr ""
+
+#: src/interface.c:46
+msgid "_Key bindings"
+msgstr ""
+
+#: src/interface.c:81 src/interface.c:93 src/interface.c:105
+#: src/interface.c:117
+msgid "N/A"
+msgstr ""
+
+#: src/interface.c:129
+msgid "No Bayer"
+msgstr ""
+
+#: src/interface.c:136
+msgid "Nearest"
+msgstr ""
+
+#: src/interface.c:143
+msgid "Edge Sense"
+msgstr ""
+
+#: src/interface.c:155
+msgid "BGGR"
+msgstr ""
+
+#: src/interface.c:162
+msgid "GRBG"
+msgstr ""
+
+#: src/interface.c:174
+msgid "No Stereo"
+msgstr ""
+
+#: src/interface.c:181
+msgid "St. Interlaced"
+msgstr ""
+
+#: src/interface.c:188
+msgid "St. Field"
+msgstr ""
+
+#: src/interface.c:200 src/interface.c:1010
+msgid "OFF"
+msgstr ""
+
+#: src/interface.c:207
+msgid "Golden mean"
+msgstr ""
+
+#: src/interface.c:214
+msgid "Small cross"
+msgstr ""
+
+#: src/interface.c:221
+msgid "Large cross"
+msgstr ""
+
+#: src/interface.c:228
+msgid "Circle"
+msgstr ""
+
+#: src/interface.c:235
+msgid "Image"
+msgstr ""
+
+#: src/interface.c:247
+msgid "Invert"
+msgstr ""
+
+#: src/interface.c:254
+msgid "Random"
+msgstr ""
+
+#: src/interface.c:261
+msgid "Replace"
+msgstr ""
+
+#: src/interface.c:268
+msgid "Average"
+msgstr ""
+
+#: src/interface.c:280
+msgid "none (overwrite)"
+msgstr ""
+
+#: src/interface.c:287
+msgid "date and time"
+msgstr ""
+
+#: src/interface.c:294
+msgid "number"
+msgstr ""
+
+#: src/interface.c:306
+msgid "png"
+msgstr ""
+
+#: src/interface.c:313
+msgid "jpeg"
+msgstr ""
+
+#: src/interface.c:320
+msgid "tiff"
+msgstr ""
+
+#: src/interface.c:327
+msgid "ppm/pgm"
+msgstr ""
+
+#: src/interface.c:334
+msgid "xpm"
+msgstr ""
+
+#: src/interface.c:341
+msgid "eim"
+msgstr ""
+
+#: src/interface.c:348
+msgid "raw"
+msgstr ""
+
+#: src/interface.c:355
+msgid "mpeg (video)"
+msgstr ""
+
+#: src/interface.c:362
+msgid "pvn (video)"
+msgstr ""
+
+#: src/interface.c:369
+msgid "raw (video)"
+msgstr ""
+
+#: src/interface.c:396
+msgid "Mode: N/A"
+msgstr ""
+
+#: src/interface.c:408
+msgid "Color: N/A"
+msgstr ""
+
+#: src/interface.c:850
+msgid "Coriander 2.0.1"
+msgstr ""
+
+#: src/interface.c:921
+msgid ""
+"Select which camera you want to control. Does not interrupt services running "
+"for current camera"
+msgstr ""
+
+#: src/interface.c:930
+msgid "<b>Camera Select</b>"
+msgstr ""
+
+#: src/interface.c:963
+msgid "Reset camera"
+msgstr ""
+
+#: src/interface.c:980
+msgid "RESET"
+msgstr ""
+
+#: src/interface.c:993
+msgid "Switch camera off"
+msgstr ""
+
+#: src/interface.c:1023
+msgid "Switch camera on"
+msgstr ""
+
+#: src/interface.c:1040
+msgid "ON"
+msgstr ""
+
+#: src/interface.c:1045
+msgid "<b>Power</b>"
+msgstr ""
+
+#: src/interface.c:1071
+msgid "Choose a memory channel"
+msgstr ""
+
+#: src/interface.c:1088
+msgid "Save setup to camera memory"
+msgstr ""
+
+#: src/interface.c:1105
+msgid "SAVE"
+msgstr ""
+
+#: src/interface.c:1117
+msgid "Load setup from camera memory"
+msgstr ""
+
+#: src/interface.c:1134
+msgid "LOAD"
+msgstr ""
+
+#: src/interface.c:1139
+msgid "<b>Memory channels</b>"
+msgstr ""
+
+#: src/interface.c:1164
+msgid "Restart video transmission for all cameras"
+msgstr ""
+
+#: src/interface.c:1181 src/interface.c:1834
+msgid "RESTART"
+msgstr ""
+
+#: src/interface.c:1194
+msgid "Start video transmission on all cameras"
+msgstr ""
+
+#: src/interface.c:1211 src/interface.c:1804
+msgid "START"
+msgstr ""
+
+#: src/interface.c:1224
+msgid "Stop video transmission for all cameras"
+msgstr ""
+
+#: src/interface.c:1241 src/interface.c:1774
+msgid "STOP"
+msgstr ""
+
+#: src/interface.c:1246
+msgid "<b>Global Iso Control</b>"
+msgstr ""
+
+#: src/interface.c:1266
+msgid "Vendor:"
+msgstr ""
+
+#: src/interface.c:1274
+msgid "Model:"
+msgstr ""
+
+#: src/interface.c:1300
+msgid "GUID:"
+msgstr ""
+
+#: src/interface.c:1308
+msgid "Name:"
+msgstr ""
+
+#: src/interface.c:1331
+msgid ""
+"Enter a nickname for this camera. This information is based on the unique ID "
+"of the camera."
+msgstr ""
+
+#: src/interface.c:1333
+msgid "IIDC specs:"
+msgstr ""
+
+#: src/interface.c:1359
+msgid "ISO Channel:"
+msgstr ""
+
+#: src/interface.c:1367
+msgid "Port / Node / Gen:"
+msgstr ""
+
+#: src/interface.c:1385
+msgid "<b>Camera information</b>"
+msgstr ""
+
+#: src/interface.c:1411
+msgid "Broadcast"
+msgstr ""
+
+#: src/interface.c:1418
+msgid ""
+"Use the broadcast address (63) to synchronize the start/stop commands. May "
+"not work with some cameras. This only provides synchronisation with a 125us "
+"accuracy and does not prevent drift."
+msgstr ""
+
+#: src/interface.c:1420
+msgid "<b>Extras</b>"
+msgstr ""
+
+#: src/interface.c:1426
+msgid "Camera"
+msgstr ""
+
+#: src/interface.c:1484
+msgid "Start/stop the reception of video"
+msgstr ""
+
+#: src/interface.c:1501 src/interface.c:2097
+msgid "Receive"
+msgstr ""
+
+#: src/interface.c:1512
+msgid "Start/stop the display"
+msgstr ""
+
+#: src/interface.c:1529 src/interface.c:2278
+msgid "Display"
+msgstr ""
+
+#: src/interface.c:1540
+msgid "Start/stop the recording of images or video"
+msgstr ""
+
+#: src/interface.c:1557 src/interface.c:2545
+msgid "Save"
+msgstr ""
+
+#: src/interface.c:1584
+msgid "Start/stop the export to a V4L device"
+msgstr ""
+
+#: src/interface.c:1601 src/interface.c:2622
+msgid "V4L"
+msgstr ""
+
+#: src/interface.c:1612
+msgid "Start/stop posting images to an FTP site"
+msgstr ""
+
+#: src/interface.c:1629 src/interface.c:2843
+msgid "FTP"
+msgstr ""
+
+#: src/interface.c:1668
+msgid "Select the image format"
+msgstr ""
+
+#: src/interface.c:1677
+msgid "<b>Format</b>"
+msgstr ""
+
+#: src/interface.c:1703
+msgid "DMA ring buffer size: "
+msgstr ""
+
+#: src/interface.c:1715
+msgid ""
+"The number of frames in the DMA buffer. Should be minimum 3 for stable "
+"operation."
+msgstr ""
+
+#: src/interface.c:1718
+msgid "frames"
+msgstr ""
+
+#: src/interface.c:1724
+msgid "<b>Capture options</b>"
+msgstr ""
+
+#: src/interface.c:1757
+msgid "stop the video flow"
+msgstr ""
+
+#: src/interface.c:1787
+msgid "Start the video flow"
+msgstr ""
+
+#: src/interface.c:1817
+msgid "Restart the video flow"
+msgstr ""
+
+#: src/interface.c:1846
+msgid "Select a transmission speed"
+msgstr ""
+
+#: src/interface.c:1857
+msgid "Sync'ed pipe"
+msgstr ""
+
+#: src/interface.c:1864
+msgid "Use a fully synchronous image pipe to avoid frame dropping."
+msgstr ""
+
+#: src/interface.c:1866
+msgid "B mode"
+msgstr ""
+
+#: src/interface.c:1873
+msgid "Switches the camera to 1394b mode for higher speeds (>400Mbps)"
+msgstr ""
+
+#: src/interface.c:1875
+msgid "<b>ISO Control</b>"
+msgstr ""
+
+#: src/interface.c:1900
+msgid "Select a trigger mode"
+msgstr ""
+
+#: src/interface.c:1918
+msgid "Select a video framerate"
+msgstr ""
+
+#: src/interface.c:1929
+msgid "Count : "
+msgstr ""
+
+#: src/interface.c:1939
+msgid "External"
+msgstr ""
+
+#: src/interface.c:1947
+msgid "Select the external trigger"
+msgstr ""
+
+#: src/interface.c:1949
+msgid "Polarity"
+msgstr ""
+
+#: src/interface.c:1957
+msgid "Choose reversed polarity for the external trigger input"
+msgstr ""
+
+#: src/interface.c:1967
+msgid "Pulse counting option for some trigger modes"
+msgstr ""
+
+#: src/interface.c:1978
+msgid "Select an external trigger input"
+msgstr ""
+
+#: src/interface.c:1989
+msgid "<b>Trigger</b>"
+msgstr ""
+
+#: src/interface.c:2013
+msgid "Select a Bayer pattern decoding technique"
+msgstr ""
+
+#: src/interface.c:2035
+msgid "Select the elementary Bayer pattern colour tile"
+msgstr ""
+
+#: src/interface.c:2048
+msgid "BPP :"
+msgstr ""
+
+#: src/interface.c:2064
+msgid "Select a stereo de-interlacing technique"
+msgstr ""
+
+#: src/interface.c:2087
+msgid "Select the current bits per pixel"
+msgstr ""
+
+#: src/interface.c:2091
+msgid "<b>Options</b>"
+msgstr ""
+
+#: src/interface.c:2121
+msgid "Display every"
+msgstr ""
+
+#: src/interface.c:2133 src/interface.c:2474 src/interface.c:2581
+#: src/interface.c:2765
+msgid ""
+"Limit the number of images processed by this service. Does not limit further "
+"services down the pipe"
+msgstr ""
+
+#: src/interface.c:2137 src/interface.c:2478 src/interface.c:2585
+#: src/interface.c:2769
+msgid "frame(s)"
+msgstr ""
+
+#: src/interface.c:2144 src/interface.c:2485 src/interface.c:2592
+#: src/interface.c:2776
+msgid "<b>Frame drop</b>"
+msgstr ""
+
+#: src/interface.c:2162
+msgid "Keep aspect ratio when resizing"
+msgstr ""
+
+#: src/interface.c:2166
+msgid "Enable this to keep the aspect ration when you resize the display"
+msgstr ""
+
+#: src/interface.c:2173
+msgid "Force display redraw at a rate of"
+msgstr ""
+
+#: src/interface.c:2177
+msgid ""
+"Force a minimum display redraw rate. Useful when you drag the display window "
+"and the transmission is stopped.."
+msgstr ""
+
+#: src/interface.c:2186
+msgid "Hz"
+msgstr ""
+
+#: src/interface.c:2193
+msgid "<b>SDL options</b>"
+msgstr ""
+
+#: src/interface.c:2217
+msgid "Choose an overlay pattern"
+msgstr ""
+
+#: src/interface.c:2245
+msgid "Select the rendering of the pattern"
+msgstr ""
+
+#: src/interface.c:2269
+msgid "Choose the pattern colour"
+msgstr ""
+
+#: src/interface.c:2270
+msgid "Select overlay color"
+msgstr ""
+
+#: src/interface.c:2272
+msgid "<b>Pattern overlay</b>"
+msgstr ""
+
+#: src/interface.c:2302
+msgid "Append:"
+msgstr ""
+
+#: src/interface.c:2311 src/interface.c:2712
+msgid "Filename:"
+msgstr ""
+
+#: src/interface.c:2319
+msgid "Format:"
+msgstr ""
+
+#: src/interface.c:2339
+msgid "Type the basename here"
+msgstr ""
+
+#: src/interface.c:2341
+msgid "Base:"
+msgstr ""
+
+#: src/interface.c:2364
+msgid "Choose what is appened to the filename"
+msgstr ""
+
+#: src/interface.c:2386
+msgid "Choose an image or video format"
+msgstr ""
+
+#: src/interface.c:2415
+msgid "Save to a directory"
+msgstr ""
+
+#: src/interface.c:2421
+msgid "Automatically save all images in a directory"
+msgstr ""
+
+#: src/interface.c:2423
+msgid "Output to STDOUT"
+msgstr ""
+
+#: src/interface.c:2429
+msgid "Send everything to stdout"
+msgstr ""
+
+#: src/interface.c:2440
+msgid "<b>Filename</b>"
+msgstr ""
+
+#: src/interface.c:2462
+msgid "Save every"
+msgstr ""
+
+#: src/interface.c:2509
+msgid "Type in the size of the RAM buffer in megabytes"
+msgstr ""
+
+#: src/interface.c:2512
+msgid "Buffer size [MB]:"
+msgstr ""
+
+#: src/interface.c:2522
+msgid "Use RAM buffering"
+msgstr ""
+
+#: src/interface.c:2528
+msgid ""
+"Enable this to put all images into a RAM buffer and dump everything to disk "
+"when the buffer is full (or the service is stopped). Useful for fast "
+"framerates, but limited by the buffer size."
+msgstr ""
+
+#: src/interface.c:2530
+msgid "malloc test"
+msgstr ""
+
+#: src/interface.c:2537
+#, c-format
+msgid ""
+"Try to allocate the buffer. IMPORTANT: this will report an error ONLY if ALL "
+"memory allocation schemes fail. In other words, this does not garantee that "
+"the allocated buffer is 100% in the RAM; some of it could be in swap."
+msgstr ""
+
+#: src/interface.c:2539
+msgid "<b>RAM buffering</b>"
+msgstr ""
+
+#: src/interface.c:2569
+msgid "Export every"
+msgstr ""
+
+#: src/interface.c:2614
+msgid ""
+"Type the V4L output device here. The devide that you can use as input for "
+"another program is the same name +1 (e.g. /dev/video0 and /dev/video1). The "
+"number of the device could be limited by the number of pipes created when "
+"launching the vloopback module."
+msgstr ""
+
+#: src/interface.c:2616
+msgid "<b>Output device</b>"
+msgstr ""
+
+#: src/interface.c:2647
+msgid "Address: "
+msgstr ""
+
+#: src/interface.c:2657
+msgid "Path: "
+msgstr ""
+
+#: src/interface.c:2667
+msgid "Username: "
+msgstr ""
+
+#: src/interface.c:2677
+msgid "Password: "
+msgstr ""
+
+#: src/interface.c:2693
+msgid "The directory in which to put the images"
+msgstr ""
+
+#: src/interface.c:2701
+msgid "Your username"
+msgstr ""
+
+#: src/interface.c:2709
+msgid "Your password. It is not memorized by coriander for security reasons."
+msgstr ""
+
+#: src/interface.c:2726
+msgid "The server address"
+msgstr ""
+
+#: src/interface.c:2734
+msgid "The filename"
+msgstr ""
+
+#: src/interface.c:2736
+msgid "<b>Server</b>"
+msgstr ""
+
+#: src/interface.c:2753
+msgid "Post every"
+msgstr ""
+
+#: src/interface.c:2793
+msgid "Sequentially number files"
+msgstr ""
+
+#: src/interface.c:2799 src/interface.c:2810 src/interface.c:2825
+#: src/interface.c:2833
+msgid "Old interface, to be updated."
+msgstr ""
+
+#: src/interface.c:2804
+msgid "Continually overwrite file"
+msgstr ""
+
+#: src/interface.c:2821
+msgid "with date"
+msgstr ""
+
+#: src/interface.c:2829
+msgid "with numbers"
+msgstr ""
+
+#: src/interface.c:2837
+msgid "<b>Mode</b>"
+msgstr ""
+
+#: src/interface.c:2849
+msgid "Services"
+msgstr ""
+
+#: src/interface.c:2916
+msgid "Auto exposure"
+msgstr ""
+
+#: src/interface.c:2965
+msgid "Current:"
+msgstr ""
+
+#: src/interface.c:2974
+msgid "Target:"
+msgstr ""
+
+#: src/interface.c:2983
+msgid "Temperature"
+msgstr ""
+
+#: src/interface.c:3032
+msgid "Blue/U-field:"
+msgstr ""
+
+#: src/interface.c:3041
+msgid "Red/V-field:"
+msgstr ""
+
+#: src/interface.c:3050
+msgid "White Balance"
+msgstr ""
+
+#: src/interface.c:3055
+msgid ""
+"These features are only there to serve as layout examples.\n"
+"Features are autogenerated by the program.\n"
+"This means that changing something here won't change\n"
+"anything in the GUI at all..."
+msgstr ""
+
+#: src/interface.c:3060
+msgid "Controls"
+msgstr ""
+
+#: src/interface.c:3099
+msgid "Coding:"
+msgstr ""
+
+#: src/interface.c:3125
+msgid "Current mode"
+msgstr ""
+
+#: src/interface.c:3147
+msgid "Packet size"
+msgstr ""
+
+#: src/interface.c:3163 src/interface.c:3211
+msgid "Size"
+msgstr ""
+
+#: src/interface.c:3171 src/interface.c:3219
+msgid "Position"
+msgstr ""
+
+#: src/interface.c:3195
+msgid "Horizontal setup"
+msgstr ""
+
+#: src/interface.c:3243
+msgid "Vertical setup"
+msgstr ""
+
+#: src/interface.c:3259
+msgid "Image pixels :  "
+msgstr ""
+
+#: src/interface.c:3268
+msgid "Image size :  "
+msgstr ""
+
+#: src/interface.c:3293
+msgid "Padding :  "
+msgstr ""
+
+#: src/interface.c:3302
+msgid "Total size:  "
+msgstr ""
+
+#: src/interface.c:3327
+msgid "Frame info [bytes]"
+msgstr ""
+
+#: src/interface.c:3332
+msgid ""
+"This page is autogenerated. You have to change the source code\n"
+"for something to take effect here."
+msgstr ""
+
+#: src/interface.c:3337
+msgid "ROI"
+msgstr ""
+
+#: src/interface.c:3378
+msgid "Services Report"
+msgstr ""
+
+#: src/interface.c:3397
+msgid "Bus 2:"
+msgstr ""
+
+#: src/interface.c:3406
+msgid "Bus 3:"
+msgstr ""
+
+#: src/interface.c:3415
+msgid "Bus 1:"
+msgstr ""
+
+#: src/interface.c:3445
+msgid "Bandwidth Usage"
+msgstr ""
+
+#: src/interface.c:3461
+msgid ""
+"Although unlikely, direct register access can <b>permanently</b> damage to "
+"your camera (e.g brick it). It may also void your warranty. Before using "
+"this interface you should have read and understood the IIDC specifications "
+"as well as any manufacturer documantation. Use at your own risk."
+msgstr ""
+
+#: src/interface.c:3469
+msgid "<b>WARNING</b>"
+msgstr ""
+
+#: src/interface.c:3489
+msgid "Write data to the register address"
+msgstr ""
+
+#: src/interface.c:3506
+msgid "Write"
+msgstr ""
+
+#: src/interface.c:3518
+msgid "Read data from the register address"
+msgstr ""
+
+#: src/interface.c:3530
+msgid "Read"
+msgstr ""
+
+#: src/interface.c:3540
+msgid "Address:"
+msgstr ""
+
+#: src/interface.c:3548
+msgid "Data:"
+msgstr ""
+
+#: src/interface.c:3556
+msgid "Offsets:"
+msgstr ""
+
+#: src/interface.c:3572
+msgid "Choose a quadlet offset from the base address."
+msgstr ""
+
+#: src/interface.c:3587
+msgid "Data I/O"
+msgstr ""
+
+#: src/interface.c:3596
+msgid "Address I/O"
+msgstr ""
+
+#: src/interface.c:3599
+msgid "Direct Register Access"
+msgstr ""
+
+#: src/interface.c:3632
+msgid "XY:"
+msgstr ""
+
+#: src/interface.c:3657
+msgid "RGB:"
+msgstr ""
+
+#: src/interface.c:3682
+msgid "YUV:"
+msgstr ""
+
+#: src/interface.c:3699
+msgid "<b>Cursor</b>"
+msgstr ""
+
+#: src/interface.c:3705
+msgid "Tools"
+msgstr ""
+
+#: src/interface.c:4338
+msgid "Copyright 2000-2008 Damien Douxchamps"
+msgstr ""
+
+#: src/interface.c:4339
+msgid ""
+"Coriander home page is\n"
+"http://damien.douxchamps.net/ieee1394/coriander/\n"
+" \n"
+"Coriander received equipment and/or donations\n"
+"from the following companies:\n"
+"\n"
+"Hamamatsu Corporation           http://www.hpk.co.jp\n"
+"The Imaging Source    http://www.1394imaging.com\n"
+"Point Grey Research              http://www.ptgrey.com\n"
+"Basler GmbH                    http://www.balserweb.com\n"
+"Dage MTI\t\t                   http://www.dagemti.com\n"
+"\n"
+"Many thanks to our sponsors!"
+msgstr ""
+
+#: src/interface.c:4372 src/interface.c:4422
+msgid "Coriander Warning"
+msgstr ""
+
+#: src/interface.c:4503
+msgid "Preferences"
+msgstr ""
+
+#: src/interface.c:4536
+msgid "seconds"
+msgstr ""
+
+#: src/interface.c:4543
+msgid "Timeout for One-Push Auto"
+msgstr ""
+
+#: src/interface.c:4560
+msgid "Update"
+msgstr ""
+
+#: src/interface.c:4565
+msgid "@"
+msgstr ""
+
+#: src/interface.c:4580
+msgid "Hertz"
+msgstr ""
+
+#: src/interface.c:4587
+msgid "Update rate"
+msgstr ""
+
+#: src/interface.c:4603
+msgid "YUYV"
+msgstr ""
+
+#: src/interface.c:4610
+msgid "UYVY"
+msgstr ""
+
+#: src/interface.c:4617
+msgid "Overlay byte order"
+msgstr ""
+
+#: src/interface.c:4635
+msgid ""
+"Don't overwrite existing files but\n"
+"append \"-1\" to filename instead"
+msgstr ""
+
+#: src/interface.c:4640
+msgid "Confirmation"
+msgstr ""
+
+#: src/interface.c:4658
+msgid "Show errors in pop-up window"
+msgstr ""
+
+#: src/interface.c:4663
+msgid "Show warnings in pop-up window"
+msgstr ""
+
+#: src/interface.c:4668
+msgid "Pop-ups"
+msgstr ""
+
+#: src/interface.c:4686
+msgid "Receive service"
+msgstr ""
+
+#: src/interface.c:4691
+msgid "ISO reception"
+msgstr ""
+
+#: src/interface.c:4696
+msgid "Automate"
+msgstr ""
+
+#: src/interface.c:4790
+msgid "Help"
+msgstr ""
+
+#: src/interface.c:4849
+msgid "Coriander Error"
+msgstr ""
+
+#: src/interface.c:4895
+msgid "No more cameras..."
+msgstr ""
+
+#: src/support.c:60 src/support.c:85
+#, c-format
+msgid "Couldn't find pixmap file: %s"
+msgstr ""

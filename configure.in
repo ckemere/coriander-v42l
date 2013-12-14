@@ -1,0 +1,303 @@
+dnl Process this file with autoconf to produce a configure script.
+
+dnl AC_INIT(configure.in)
+AC_INIT(coriander, 2.0.1)
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
+AM_CONFIG_HEADER(config.h)
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+
+pkg_modules="libgnomeui-2.0"
+PKG_CHECK_MODULES(PACKAGE, [$pkg_modules])
+AC_SUBST(PACKAGE_CFLAGS)
+AC_SUBST(PACKAGE_LIBS)
+
+PKG_CHECK_MODULES(X11, ["x11"])
+AC_SUBST(X11_CFLAGS)
+AC_SUBST(X11_LIBS)
+
+GETTEXT_PACKAGE=coriander
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Gettext package.])
+
+dnl Add the languages which your application supports here.
+ALL_LINGUAS=""
+AM_GLIB_GNU_GETTEXT
+
+AC_DEFUN([AC_CHECK_LIBDC],[
+	AC_MSG_CHECKING(for libdc1394-2 headers)
+ 	AC_TRY_CPP([
+        #include <dc1394/dc1394.h>
+	#include <dc1394/control.h>
+	#include <dc1394/utils.h>
+	#include <dc1394/conversions.h>
+	],[
+ 	libdc1394=yes
+ 	],[
+ 	libdc1394=no
+ 	])
+ 	AC_MSG_RESULT($libdc1394)
+ 	if test x$libdc1394 = xno; then
+          AC_ERROR([libdc1394 is not installed.  
+**************************************************************************
+**   Please install libdc1394 version 2.0.2 or later                    **
+**   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
+**************************************************************************])
+        fi
+	
+
+	AC_SUBST(LIBDC_CFLAGS)
+	AC_SUBST(LIBDC_LIBS)
+	AC_MSG_CHECKING(libdc1394-2 version)
+	AC_TRY_COMPILE([
+        #include <dc1394/dc1394.h>
+	],[
+	int main(void) {
+	dc1394video_frame_t *frame;
+	dc1394camera_t *camera;
+	int depth, node, gen;
+	dc1394_capture_setup(camera, 4, DC1394_CAPTURE_FLAGS_DEFAULT);
+        dc1394_video_get_data_depth(camera, &depth);
+	dc1394_camera_get_node(camera,&node,&gen);
+	return 0;
+	}
+	],libdc1394=ok,libdc1394=outdated);
+	AC_MSG_RESULT($libdc1394)
+ 	if test x$libdc1394 = xoutdated; then
+          AC_ERROR([libdc1394 is too old. 
+**************************************************************************
+**   Please install libdc1394 version 2.0.2 or later                    **
+**   Source tarball and SVN at:  http://www.sf.net/projects/libdc1394   **
+**************************************************************************])
+        fi
+
+
+	AC_CHECK_LIB(dc1394,dc1394_camera_get_linux_port,libdc1394=yes,libdc1394=no,-lraw1394)
+	if test x$libdc1394 = xyes; then
+          AC_DEFINE(HAVE_GET_PORT,1,[defined if port function is available])
+        fi
+
+        LIBDC_LIBS="-ldc1394"
+        LIBDC_CFLAGS=""
+]) 
+
+AC_DEFUN([AC_CHECK_LIBDC_VERSION_FUNCTION],[
+
+])
+
+
+AC_DEFUN([AC_CHECK_LIBRAW],[
+	AC_MSG_CHECKING(for libraw1394)
+ 	AC_TRY_CPP([
+	#include <libraw1394/raw1394.h>
+ 	],[
+ 	libraw1394=yes
+ 	],[
+ 	libraw1394=no
+ 	])
+ 	AC_MSG_RESULT($libraw1394)
+ 	if test x$libraw1394 = xno; then
+          AC_ERROR([libraw1394 is not installed.
+**************************************************************************
+**   Please install version >= 1.2.0                                    **
+**   Source tarball and SVN at:  http://www.linux1394.org/              **
+**************************************************************************])
+        else
+	  AC_SUBST(LIBRAW_CFLAGS)
+	  AC_SUBST(LIBRAW_LIBS)
+ 	  AC_CHECK_LIB(raw1394,raw1394_new_handle,libraw1394=ok,libraw1394=old)
+ 	  if test x$libraw1394 = xok; then
+             LIBRAW_LIBS="-lraw1394"
+             LIBRAW_CFLAGS=""
+	  else
+            AC_ERROR([libraw1394 is too old.
+**************************************************************************
+**   Please upgrade to a version >= 1.2.0                               **
+**   Source tarball and SVN at:  http://www.linux1394.org/              **
+**************************************************************************])
+	  fi
+
+	fi
+])
+
+AC_DEFUN([AC_CHECK_LIBRAW_VERSION],[
+	AC_SUBST(LIBRAW_CFLAGS)
+	AC_SUBST(LIBRAW_LIBS)
+ 	AC_CHECK_LIB(raw1394,raw1394_new_handle,libraw1394=ok,libraw1394=old)
+ 	if test x$libraw1394 = xok; then
+           LIBRAW_LIBS="-lraw1394"
+           LIBRAW_CFLAGS=""
+	else
+          AC_ERROR([libraw1394 is too old.
+**************************************************************************
+**   Please upgrade to a version >= 1.2.0                               **
+**   Source tarball and SVN at:  http://www.linux1394.org/              **
+**************************************************************************])
+	fi
+])
+
+
+AC_DEFUN([AC_CHECK_FTPLIB],[
+	AC_SUBST(FTPLIB_CFLAGS)
+	AC_SUBST(FTPLIB_LIBS)
+	AC_CHECK_LIB(ftp, FtpInit,
+          AC_DEFINE(HAVE_FTPLIB,1,[defined if libftp is available])
+          FTPLIB_LIBS="-lftp"
+          FTPLIB_CFLAGS="",
+          AC_MSG_RESULT([ftplib is required for FTP support.
+**************************************************************************
+**   Source tarball available at: http://nbpfaus.net/~pfau/ftplib/      **
+**   FTP SERVICE DISABLED                                               **
+**************************************************************************]))
+])
+
+AC_DEFUN([AC_CHECK_SDLLIB],[
+	AC_SUBST(SDLLIB_CFLAGS)
+	AC_SUBST(SDLLIB_LIBS)
+	AC_CHECK_PROG(have_sdl_config, sdl-config, "found", "no")
+	if test x$have_sdl_config = xfound; then
+	  SDLLIB_LIBS=`sdl-config --libs`
+	  SDLLIB_CFLAGS=`sdl-config --cflags`
+	  AC_DEFINE(HAVE_SDLLIB,1,[defined if libsdl is available])
+	else
+	  AC_MSG_RESULT([SDL required for display support.
+**************************************************************************
+**   SDL can be downloaded in various formats at http://www.libsdl.org  **
+**   DISPLAY SERVICE DISABLED                                           **
+**************************************************************************])
+	fi
+])
+
+AC_DEFUN([AC_CHECK_XV],[
+	AC_SUBST(XV_CFLAGS)
+	AC_SUBST(XV_LIBS)
+	AC_MSG_CHECKING(for Xv extension)
+	AC_TRY_COMPILE([
+	#include <X11/Xlib.h>
+ 	#include <X11/extensions/Xvlib.h>],[
+	int main(void) { (void) XvGetPortAttribute(0, 0, 0, 0); return 0; }
+	],xv=ok,xv=no);
+	AC_MSG_RESULT($xv)
+ 	if test x$xv = xok; then
+           XV_LIBS="-lXv"
+           XV_CFLAGS=""
+	   AC_DEFINE(HAVE_XV,1,[defined if XV video overlay is available])
+	else
+          AC_ERROR([The XV overlay libraries were not found 
+**************************************************************************
+**   Please install xv overlay libraries and development packages.      **
+**   On Debian-based distributions this would be somthing like          **
+**   libxv-dev. Also, run 'xvinfo' to check if your system has overlay  **
+**   capabilities. If not you will need to update your display drivers. **
+**************************************************************************])
+ 	fi
+])
+
+AC_DEFUN([AC_CHECK_LFS],[
+	AC_SUBST(COR_LFS_CFLAGS)
+	AC_SUBST(COR_LFS_LDFLAGS)
+	AC_CHECK_PROG(have_getconf, getconf, "found", "no")
+	if test x$have_getconf = xfound; then
+	  COR_LFS_CFLAGS=`getconf LFS_CFLAGS`
+	  COR_LFS_LDFLAGS=`getconf LFS_LDFLAGS`
+	else
+	  AC_MSG_RESULT([getconf not found.
+**************************************************************************
+**   I need the 'getconf' shell utility to configure coriander for      **
+**   LFS (Large File System). Since you don't have getconf coriander    **
+**   will not be able to write files > 2GB.                             **
+**************************************************************************])
+	fi
+])
+
+AC_DEFUN([AC_CHECK_FFMPEG],[
+	PKG_CHECK_MODULES(FFMPEG, libavformat libavcodec,
+		have_ffmpeg=yes, have_ffmpeg=no)
+	AC_SUBST(FFMPEG_CFLAGS)
+	AC_SUBST(FFMPEG_LIBS)
+
+	# Older ffmpeg releases have ffmpeg-config rather than installing .pc files
+	if test x$have_ffmpeg = xno; then
+		AC_CHECK_PROG(have_ffmpeg, ffmpeg-config, "yes", "no")
+		if test x$have_ffmpeg = xyes; then
+			FFMPEG_LIBS=`ffmpeg-config --libs avformat avcodec`
+			FFMPEG_CFLAGS=`ffmpeg-config --cflags`
+		fi
+	fi
+
+	if test x$have_ffmpeg = xyes; then
+		AC_MSG_CHECKING(ffmpeg version)
+		AC_TRY_COMPILE([#include <ffmpeg/avformat.h>],[
+			int main(void) {
+			AVFormatContext *oc;
+			AVCodecContext *c;
+			AVStream *st;
+			st = av_new_stream(oc, 0);
+			c = st->codec;
+			return 0;
+			}
+			],ffmpeg=ok,ffmpeg=outdated);
+		AC_MSG_RESULT($ffmpeg)
+		if test x$ffmpeg = xok; then
+			AC_DEFINE(HAVE_FFMPEG,1,[defined if ffmpeg is available])
+		else
+			if test "x$want_ffmpeg" = "xyes"; then
+				AC_ERROR([ffmpeg is too old.
+**************************************************************************
+**   Please install ffmpeg version 0.4.9 minimum                        **
+**************************************************************************])
+			fi
+		fi
+	else
+	  AC_MSG_RESULT([ffmpeg required for MPEG video saving.
+**************************************************************************
+**   ffmpeg can be obtained using your favorite package mamagement      **
+**   system (such as apt-get). Be sure to get ffmpeg and the two        **
+**   development packages libavcodec-dev and libavformat-dev (on        **
+**   Debian). In the end, you should have the executable 'ffmpeg-config'**
+**   somewhere on your system.                                          **
+**   Saving JPEG images and MPEG movies is DISABLED.                    **
+**************************************************************************])
+	fi
+])
+
+
+# CUSTOM CHECKS    ###########################################################
+
+AC_CHECK_LFS
+AC_CHECK_XV
+
+# MMX/SSE disabled to avoid X64 problems
+#AC_CHECK_MMX
+#AC_CHECK_SSE
+#AC_CHECK_SSE2
+
+AC_CHECK_LIBRAW
+AC_CHECK_LIBDC
+AC_CHECK_FTPLIB
+AC_CHECK_SDLLIB
+
+# Support for FFMPEG dropped at this time.
+#AC_ARG_ENABLE(ffmpeg,
+#	AS_HELP_STRING([--enable-ffmpeg], [enable JPEG/MPEG saving (default no)]),
+#	want_ffmpeg=$enableval, want_ffmpeg=no)
+#
+#if test "x$want_ffmpeg" != "xno"; then
+#	AC_CHECK_FFMPEG
+#fi
+
+dnl deprecated:
+dnl AC_CHECK_GDK_PIXBUF
+
+## END CUSTOM CHECKS ########################################################
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+po/Makefile.in
+])
+

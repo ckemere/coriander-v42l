@@ -1,0 +1,159 @@
+==========================================================================
+
+  		    C   O   R   I   A   N   D   E   R
+
+		  	      version 2.0.1
+
+	      The Gnome IEEE-1394 Digital Camera Controller
+
+     (C) 2000-2010 by Damien Douxchamps <ddouxchamps@users.sf.net>
+
+	    http://damien.douxchamps.net/ieee1394/coriander/
+
+Mailing lists: - coriander-user@lists.sourceforge.net
+		 for user support (please RTFM)
+	       - coriander-devel@lists.sourceforge.net
+		 for bugs, feature requests,...
+
+==========================================================================
+		
+
+Hello world!
+
+Coriander is a GUI for controlling a Digital Camera (compatible with
+the IIDC specs issued by the 1394 Trade Association [1]). Coriander
+offers full camera control (including Format_7 and absolute settings),
+live video display, images and streams saving, images posting with FTP
+and last but not least video4linux (V4L) export. The latter service
+allows you to use Coriander as a V4L video generator for popular
+applications like GnomeMeeting, Effectv,... Due to the properties of
+the IEEE1394 protocol, Coriander can even control an IEEE1394 camera
+without interferring with the image flow from that camera. You can
+thus setup a camera with Coriander while the video flow is used by
+another application.
+
+				**********
+
+IMPORTANT NOTE: Coriander will NOT work with consumer-grade DV cameras
+(e.g. cameras in which you can insert a tape). These cameras should be
+controlled with he AV/C protocol, please refer to [8]. Also, not all
+industrial cameras are IIDC specs-compliant. Check [7] to have a list
+of currently supported cameras.
+
+				**********
+
+Most image processing scientists using 1394 cameras under Linux know
+about the libdc1394 library [2]. However, it's a real problem when you
+need to quickly setup a demo or get some frames for testing. If, just
+like me, you also had this problem, Coriander is for you [4]!
+
+Please have a look at the TODO, ChangeLog and BUGS files to see the
+current status of the project. Contributors are most welcome so if
+you're interrested in making this program better don't hesitate to
+contact me.
+
+The latest version can be found on the SourceForge website:
+
+http://sourceforge.net/projects/coriander
+
+There is a user manual available at the same URL. Please read it
+before sending tons-o-emails to me!! ;-) You will also get a faster
+reply if you send your e;ails to the mailing lists (see above).
+
+As I can only test Coriander with the cameras I have which means some
+features have not been tested. If you have another camera, please test
+Coriander and send to the mailing list with the bugs you identified.
+
+Last but not least, Coriander has received vision hardware donations or
+lease and technical help from the following companies:
+
+- Hamamatsu Photonics http://www.hpk.co.jp
+- The Imaging Source  http://www.1394imaging.com
+- Point Grey Research http://www.ptgrey.com
+- Basler GmbH         http://www.balserweb.com
+- Dage-MTI	      http://www.dagemti.com
+
+Many thanks for their support!
+
+Damien
+
+
+Install instructions:
+_______________________
+
+Basically, you should just type:
+
+./configure
+make
+make install
+
+If you got a CVS version you need to type
+
+./autogen.sh
+make
+make install
+
+If you have troubles, please read the INSTALL file provided.
+
+
+
+Hardware requirements:
+_______________________
+
+- A linux box,
+- an 1394 interface card (PCI, CardBus, whatever...). Try to get an
+  OHCI card as their support is better under Linux.
+- a digital camera compatible with IIDC specs v1.04 or later.
+
+
+
+Software requirements:
+_______________________
+
+Software requirements are now more or less correctly probed by the configure
+script: libdc1394, libraw1394, MMX/SSE capabilities, libftp and SDL libs are
+checked.
+
+- a kernel with 1394 support [3], preferably a recent 2.6.X
+  Kernel modules to be compiled: ieee1394, ohci1394, raw1394 and video1394
+- XFree 3.3.6 (XFree 4.1.0 recommended for video overlay)
+- Gtk 1.2 & Gtk-devel
+- libraw1394 [5] and libdc1394 [2] installed. You need at least libdc1394
+  2.0.0.
+- ftplib installed for FTP support [9]
+- SDL installed for display support [11]
+- Glade (for development only)
+- automake 1.4 (for development only)
+- autoconf 2.13 (for development only)
+- vloopback module v 0.92 for v4l support [12]. You should apply the patch
+  found in the nice effectv program [13] the 0.90 version in order to have
+  it working. Effectv can be used to check that v4l is working. Note that
+  if you use videoN as v4l device in Coriander, the device other applications
+  can use is video(N+1). V4l service works also well with Gnomemeeting [14].
+  vloopback will only work with kernels 2.6 if you use the latest patch.
+
+In order to have Xv support within SDL, you will maybe need some custom
+drivers, e.g. for Nvidia chipsets [10] or for ATI Rage chipsets [6].
+
+Debian-based distribution packages:
+If you are using a Debian-based distribution, you can easily choose to
+install the following packages that will allow you to compile the code:
+libgnome-dev libgnomeui-dev libxv-dev libsdl-image1.2-dev
+
+References:
+_______________________
+
+[1] 1394 T.A.		  : http://www.1394ta.org
+[2] libdc1394		  : http://sourceforge.net/projects/libdc1394
+[3] linux1394		  : http://www.linux1394.org
+[4] Coriander		  : http://sourceforge.net/projects/coriander
+[5] linux1394		  : http://sourceforge.net/projects/libraw1394
+[6] LiViD    		  : http://www.linuxvideo.org
+[7] 1394 IIDC camera list : http://www.tele.ucl.ac.be/PEOPLE/DOUXCHAMPS/ieee1394/cameras/
+[8] linux1394 HOWTO	  : http://www.linux1394.org/start_req.html
+[9] ftplib 		  : http://nbpfaus.net/~pfau/ftplib/
+[10] Nvidia		  : http://www.nvidia.com
+[11] SDL		  : http://www.libsdl.org
+[12] vloopback		  : http://motion.technolust.cx/vloopback/
+[13] effectv		  : http://effectv.sf.net/
+[14] Gnomemeeting	  : http://www.gnomemeeting.org

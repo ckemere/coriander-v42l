@@ -1,0 +1,9 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-project SYSTEM "http://glade.gnome.org/glade-project-2.0.dtd">
+
+<glade-project>
+  <name>Coriander</name>
+  <program_name>coriander</program_name>
+  <use_widget_names>TRUE</use_widget_names>
+  <backup_source_files>FALSE</backup_source_files>
+</glade-project>

@@ -1,0 +1,36 @@
+Author:
+-----------
+Damien Douxchamps
+
+Contributors:
+--------------
+Dan Dennedy				-- V4L, first video overlay and capture
+Yasutoshi Onishi			-- big help debugging Format7
+Xiong Quanren				-- big help debugging Bayer decoding functions
+Marcus Lim				-- test pattern function (discontinued)
+Andreas Micklei				-- bus topology functions
+Olaf Ronneberger			-- Format7 massive debug
+Johan Knol				-- bug fixes, additions, enhanced display window
+Jacob (Jack) Gryn                       -- PVN saving capability, lots of debug and suggestions
+Konstantinos G. Derpanis                -- PVN saving capability
+Frederic Devernay			-- bug fixes and enhancements
+Anthony Westley				-- save-to-dir feature, V4L enhancements
+John B. Burchett			-- bug fix
+Rick Philbrick				-- bug fix
+Clay Kunz				-- bug fixes
+L. C. Bruzenak				-- bug fix
+Laurent Bonnaud				-- bug fixes
+Vincent Girondel			-- bug fixes
+Marc Leconte				-- bug fix
+John Lien				-- SDL fix
+Rich Walker				-- bug fix
+Peter De Schrijver			-- Debian package maintainer, bugfixes
+Matt Scott				-- bug fix
+Arne Caspari				-- feature/bug fix suggestions
+Richard Cunningham			-- LFS support
+Will Shackleford			-- bug fix
+Olaf Hering				-- patch
+Sergio					-- MPEG/libjpeg save
+Tim Niemueller				-- Fix implicit DSO linking (Fedora fix)
+
+If you contributed and your name is not included please let me know! :-)

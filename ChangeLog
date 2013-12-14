@@ -1,0 +1,1853 @@
+Coriander, (c) 2000-2008 Damien Douxchamps <ddouxchamps@users.sf.net>
+
+   2010-05-27, by Damien Douxchamps
+   - Version 2.0.1
+	
+   2009-05-03, by Damien Douxchamps
+   - Apply patches from Martin Herrmann (stereo deinterlacing problems)
+	
+   2009-02-04, by Damien Douxchamps
+   - fix verbose gtk warnings (thanks to Chris Rankin)
+	
+   2008-06-21, by Damien Douxchamps
+   - little compilation fix and...
+   - RELEASE 2.0.0!
+
+   2008-06-17, by Damien Douxchamps
+   - Implement automatic iso control and RECEIVE service. ON by default.
+	
+   2008-05-08, by Damien Douxchamps
+   - Fix bad calls to dc1394_camera_get_linux_port 
+	
+   2008-03-14, by Damien Douxchamps
+   - Fix for juju (thanks to Chris Rankin)
+
+   2008-03-13, by Damien Douxchamps
+   - updates for libdc 2.0.2
+
+   2008-02-25, by Damien Douxchamps
+   - Prepared release 2.0.0
+	
+   2008-02-12, by Damien Douxchamps
+   - fix compilation with juju stack and older libdc1394.
+   - misc cosmetic changes
+
+   2008-02-07, by Damien Douxchamps
+   - re-instate the bus usage functionality now that libdc includes functions to
+     get port and node.
+   - show port/node in information frame
+   - remove "grab now" and "overlay file entry"
+   - update icons
+   - update configure script for laters libdc1394
+   - fix feature presence and menus.
+   - remove spurious debug message
+	
+   2008-02-06, by Damien Douxchamps
+   - fix a bug in format7 controls (interdependency / update)
+	
+   2008-01-18, by Damien Douxchamps
+   - more updates regarding the feature frame, which is now more compact than ever.
+   - release 2.0.0-rc6
+   - fix temperature feature.
+
+   2008-01-17, by Damien Douxchamps
+   - add spin buttons to most ranges. Not 100% functional yet. TODO:
+	- switch the spinbutton in absolute mode
+	- make the control frame more compact (remove each feature's frame)
+   - test for the availability of the EdgeSense2 demosaicing algorithm.
+   - save to dir should not be available in save-to-video mode.
+
+   2008-01-10, by Damien Douxchamps
+   - temporarily disable FFMPEG support since it's seriously broken. I'd like to
+     replace this by a mencoder service instead.
+   - fix broken name generation when saving files.
+
+   2008-01-09, by Damien Douxchamps
+   - FFMPEG patch from Stephan Richter. Not supposed to work yet, but it compiles.
+
+   2007-12-27, by Damien Douxchamps
+   - remove the timing-related debug statements
+   - Sync with libdc1394 SVN 526
+
+   2007-12-13, by Damien Douxchamps
+   - Sync with libdc1394 2.0.0-rc8
+
+   2007-12-11, by Damien Douxchamps
+   - re-activate the broadcast capability (requires latest SVN from libdc1394)
+	
+   2007-12-07, by Damien Douxchamps
+   - protect external trigger and trigger polarity buttons to avoid spurious
+     warnings.
+
+   2007-12-06, by Damien Douxchamps
+   - sync with libdc1394 SVN 492.
+	
+   2007-12-03, by Damien Douxchamps
+   - sync with libdc SVN 479.
+   - sync with libdc SVN 477. Note that a few things don't work anymore due to
+     API limitations: broadcast, bandwidth display, port/node display and a few
+     other things.
+	
+   2007-12-02, by Damien Douxchamps
+   - update to work with older config files (thanks to Chris Rankin)
+
+   December 1st, 2007, by Damien Douxchamps
+   - fixed trigger issues caused by changes in the latest libdc SVN
+     (thanks to Chris Rankin)
+	
+   November 30th, 2007, by Damien Douxchamps
+   - Fixed mutex conflict
+   - sync with libdc SVN 469
+
+   November 29th, 2007, by Damien Douxchamps
+   - Update for libdc SVN 462
+	
+   November 28th, 2007, by Damien Douxchamps
+   - big update after the important changes in libdc1394.
+
+   November 5th, 2007, by Damien Douxchamps
+   - usleep(0) doesn't seem to work anymore, either with recent kernels of
+     recent GCCs. I've bumped it to usleep(100). The symptom of this problem is
+     a receive service that uses 100% of the processor even when no images are
+     coming (ISO off).
+   - fixed a bug in build_menus: phy_speed is not defined anymore and cannot be
+     used.
+   - remove the verbose warning about "Stange values". An "r" was missing
+     anyway ;)
+	
+   September 17, 2007, by Damien Douxchamps
+   - sync with libdc1394 rev 430
+	
+   September 14, 2007, by Damien Douxchamps
+   - sync with libdc1394 rev 429 (new type dc1394id_t)
+	
+   September 13, 2007, by Damien Douxchamps
+   - sync with libdc1394 rev 428 (multi-unit patch)
+
+   August 29, 2007, by Damien Douxchamps
+   - sync with libdc1394 v2 SVN 425
+
+   August 22nd, 2007, by Damien Douxchamps
+   - use the new camera detection API. Hotplug doesn't work yet (segfault).
+   - misc cleanups
+	
+   August 1st, 2007, by Damien Douxchamps
+   - removed references to cooked1394read
+   - removed topology.c/h (it's in libdc1394 now)
+   - some 'smarter' feature presence checks should be done for Point Grey only
+
+   June 19, 2007, by Damien Douxchamps
+   - libdc1394 sync
+   - fix bayer processing that was sometimes badly taken into account
+	
+Changes in version 2.0.0-rc5
+	
+   June 11, 2007, by Damien Douxchamps
+   - Upgrade the framerate calculation to use the timestamps sent by the kernel
+     (through libdc1394)
+   - Add a counter that shows dropped frames warnings. A warning is issued when
+     the difference between a pervious period and a new period is larger than
+     50%.
+   - fixed the bit depth. If the bit depth is available in the camera, it will
+     be used. Otherwise the manual control will be available. I still have
+     problems with my Basler 602f though. It has 10bits but the image is not
+     good: saturated regions appear mid-grey (128) and the other regions are
+     noise.
+
+   March 1st, 2007, by Damien Douxchamps
+   - sync with libdc1394 (SVN 391)
+
+   February 23, 2007, by Damien Douxchamps
+   - fixed missing string in trigger_source_list
+
+   February 19, 2007, by Damien Douxchamps
+   - sync with libdc1394
+   - add more details to configure messages
+
+   February 9, 2007, by Damien Douxchamps
+   - added PIO, SIO and strobe direct register read/write
+   - remove spurious debug messages
+
+   February 8, 2007, by Damien Douxchamps
+   - revert part of the change of Feb. 1st regarding the Flea 2 because some
+     other manufacturer's implementation systematically fail one of the tests.
+	
+   February 5, 2007, by Damien Douxchamps
+   - fixed wrong argument order of WritePVNHeader(). Thanks to John Shen.
+	
+   February 1st, 2007, by Damien Douxchamps
+   - Disable features if they don't support any control mode or if they are
+     OFF and their power can't be controlled. This solves a few issues we had
+     with the Flea 2 from Point Grey.
+   - little update of the "About" window
+   - don't set 1394b at boot time: let the user do it manually.
+	
+   January 25, 2007, by Philippe De Muyter
+   - move and fix `extern' declarations of string arrays from build_menus.c,
+     build_ranges.c, thread_save.c, tools.c, update_frames.c and
+     update_ranges.c to coriander.h
+
+Changes in version 2.0.0-rc4
+
+   January 21, 2007, by Damien Douxchamps
+   - version 2.0.0-rc4
+	
+   January 20, 2007, by Damien Douxchamps
+   - allow the user to manually control ISO speed (100...3200Mbps) and
+     operation mode (legacy/1394b). Before this change it was not possible
+     to use a 1394b camera with a 1394a card.
+
+   January 5, 2007, by Damien Douxchamps
+   - proper use of indexes when building trigger menus. Fixes bug 230171 at
+     bugzilla.novell.com. Thanks to Olaf Hering for the patch.
+	
+Changes in version 2.0.0-rc3
+
+   December 22, 2006, by Damien Douxchamps
+   - release 2.0.0-rc3
+	
+   December 20, 2006, by Damien Douxchamps
+   - big phat number of fixes regarding display, capture, etc...
+	
+Changes in version 2.0.0-rc2
+
+   December 08, 2006, by Damien Douxchamps
+   - release 2.0.0-rc2
+	
+   December 08, 2006, by Daniel Drake
+   - fix ffmpeg detection scripts in configure.in
+	
+   November 22, 2006, by Damien Douxchamps
+   - sync with libdc1394-2 (SVN 327)
+   - sync with libdc1394-2 (SVN 329)
+	
+   October 19, 2006, by Damien Douxchamps
+   - move to the new capture API
+	
+   September 26, 2006, by Damien Douxchamps
+   - PHY specs detection moved to libdc1394.
+	
+   August 24, 2006, by Damien Douxchamps
+   - ffmpeg should not be mandatory, update configure.in (Olaf Hering)
+	
+   August 23, 2006, by Damien Douxchamps
+   - Get rid of the dependency on ffmpeg-config thanks to a patch from
+     Olaf Hering.
+	
+Changes in version 2.0.0-rc1
+
+   August 2, 2006, by Damien Douxchamps
+   - fixed a serious mistake, sync with libdc-2.0.0-rc3
+	
+   August 1, 2006, by Damien Douxchamps
+   - removed duplicate headers for conversion functions. This may solve the
+     green/purple screens found with some hardware.
+	
+   June 19, 2006, by Damien Douxchamps
+   - fixed two bad conditions in thread_v4l.c, thanks to Marc Robert.
+	
+   June 12, 2006, by Damien Douxchamps
+   - important changes to accomodate the multiplatform patch for libdc1394
+     from David Moore.
+   - the handle information is not available for display anymore (it may be
+     removed in the future)
+
+   May 12, 2006, by Damien Douxchamps
+   - some "BPP is zero" warnings appear with Sony cameras. I did a first
+     fix for this which only bypasses the problem by removing the offending
+     warning. TODO: later, a valid BPP should be obtained in a way or another
+     (for example: wait and try again, reset f7 ROI or at last set f7 ROI to
+     default sizes). Thanks to Onishi-san for finding this.
+	
+Changes in version 2.0.0-pre6
+
+   April 14, 2006, by Damien Douxchamps
+   - Format7 had problem with incorrect image resizing. The symptoms were
+     garbled images when changing the image size and non-functionning rulers
+     for image position. This is now fixed through the used of the newly
+     intriduced function "dc1394_format7_set_roi()" of libdc1394 v2.
+	
+   April 05, 2006, by Damien Douxchamps
+   - fixed error/warning popup deadlocks
+   - update broadcast flag handling
+	
+   March 28, 2006, by Damien Douxchamps
+   - sync with libdc1394
+   - fix ISO restart when changing format/mode/framerate/...
+   - new: external trigger input selection
+	
+Changes in version 2.0.0-pre5
+
+   March 19, 2006, by Damien Douxchamps
+   - fixed a (serious) bug regarding multiple camera support. Thanks to Michel
+     Sarkis and his team for finding that.
+   - fixed string size issue in the register access.
+	
+   February 2, 2006, by Damien Douxchamps
+   - support for trigger modes 4, 5, 14 and 15
+   - basic overwriting protection: append "-%d" to the filename. 
+   - small merge of Johann's patch regarding execution of thread functions
+     by the main function.
+   - errors and warnings can be shown in popups.
+
+   January 23, 2006, by Damien Douxchamps
+   - errors are now always sent to stderr. There is a problem with sending
+     GTK commands from threads so I skipped the message log altogether.
+
+   January 22, 2006, by Damien Douxchamps
+   - code cleanup (no more parameters copy in threads)
+	
+   January 10, 2006, by Damien Douxchamps
+   - added direct register manipulation
+
+   December 26, 2005, by Damien Douxchamps
+   - sync with libdc
+   - automatic bayer pattern detection (if available)
+
+   December 23, 2005, by Damien Douxchamps
+   - sync with new libdc location
+   - merge autoconf functions in (configure.in)
+   - sync with FFMPEG. Coriander now accepts the latest version.
+	
+   December 20, 2005, by Damien Douxchamps
+   - added support for VNG bayer decoding
+	
+   December 18, 2005, by Damien Douxchamps
+   - sync with libdc1394
+	
+   December 11, 2005, by Damien Douxchamps
+   - update the ranges when a control that changes the framerate is activated.
+     This is necessary because the min/max and/or absolute value may change
+     when the maximal period changes.
+	
+   December 11, 2005, by Damien Douxchamps
+   - integrated new functions to access capture data.
+   - fixed iso channel allocation
+   - fixed bad reports in status / performances / service tree
+	
+   December 2, 2005, by Damien Douxchamps
+   - removed MMX/SSE checks after problems reported by Jacob Gryn when
+     compiling on X64 archs.
+	
+   October 17, 2005, by Damien Douxchamps
+   - update configure.in to properly detect libdc CVS requirement
+	
+   October 16, 2005, by Damien Douxchamps
+   - use the video1394 buffer filltime instead of a new gettimeofday.
+   - fixed hotplug, including leaks from libdc1394 (which was corrected too).
+	
+   October 15, 2005, by Damien Douxchamps
+   - fixed gtk errors related to the previous change
+	
+   October 14, 2005, by Damien Douxchamps
+   - removed manual input of video1394 device names.
+
+Changes in version 2.0.0-pre4
+
+   October 4, 2005, by Damien Douxchamps
+   - fixed the bpp overflow in the format 7 bpp range. this happened when the image
+     size was reduced while the bpp was kept to the previous allowed maximum.
+   - fixed auto framerate adaptation
+	
+   October 3, 2005, by Damien Douxchamps
+   - fixed bad control of WB (it was not working anymore). This bug was probably
+     revealed by the sticter signess check of GCC wich prompted several changes.
+     the *4 factor, whose cause was not known, had to be removed.
+   - fixed the bug related to uninitialized F7 color mode menu. It was in libdc1394.
+
+   September 9, 2005, by Damien Douxchamps
+   - sync with libdc changes (capture struct is now invisible)
+
+   August 30, 2005, by Damien Douxchamps
+   - removed 'append number' option if the save format is a video format
+     (thanks to Jacob Gryn)
+
+   August 27, 2005, by Damien Douxchamps
+   - fixed circular reference of callbacks for the camera text entry
+   - fixed stupid error in the ISO channel settings (a p=p->next was missing,
+     resulting in an endless loop...)
+	
+   August 25, 2005, by Damien Douxchamps
+   - sync with libdc again: remove the duplicate F7 code that was related
+     to getting F7 modes capabilities.
+   - better ISO channel allocation (it was only performed during a hotplug
+     event and was missing at launch time)
+   - removed debug statements
+
+Changes in version 2.0.0-pre3
+
+   August 2, 2005, by Damien Douxchamps
+   - synched with libdc CVS (compilation check only)
+	
+   July 2, 2005, by Damien Douxchamps
+   - applied patch from Olaf Hering (uninitialized variables)
+   - applied patch from Olaf Hering (type conversion warnings)
+   - fixed jpeg saving.
+	
+   July 1, 2005, by Damien Douxchamps
+   - implemented white shading (table built was missing)
+   - a warning is now issued if the color format is not OK for MPEG or JPEG saving.
+
+Changes in version 2.0.0-pre2
+
+   June 29, 2005, by Damien Douxchamps
+   - fixed bad inclusion of services in the pipe. They are now inserted in the
+     correct order.
+	
+   June 28, 2005, by Damien Douxchamps
+   - fixed important bug in the synch pipe: frames could be out of order and the
+     pipe could also oscillate. Not 100% tested but looks better now.
+	
+Changes in version 2.0.0-pre1
+
+   June 13, 2005, by Damien Douxchamps
+   - fixed and updated libdc detection macros for libdc 2.0.0-pre3
+	
+   May 25, 2005, by Damien Douxchamps
+   - sync with cvs of libdc1394
+   - fixed the interactive display of the WOI
+	
+   May 12, 2005, by Damien Douxchamps
+   - fixed little bug in random color overlay: the color is more homogenous now.
+	
+   May 11, 2005, by Damien Douxchamps
+   - fixed "-lgthread" inclusion in src/Makefile.am following a report from
+     Don Murray. I should have been "-lgthread-2.0"
+	
+   May 10, 2005, by Damien Douxchamps
+   - adapted to libdc-2.0 changes
+	
+   May 9, 2005, by Damien Douxchamps
+   - fixed a lot of bugs.
+   - added exposure check (under and over exposed areas highlighted)
+   - fixed important bug (yet another) due to the lack of 'hole' in the enum
+     type for the formats. Since formats are hidden anyway I've reverted that
+     crap.
+	
+   May 8, 2005, by Damien Douxchamps
+   - added white shading support
+   - moved to libdc 2.0.0
+	
+   Apr 26, 2005, by Damien Douxchamps
+   - removed references to TIFF, PNG, EIM and XPM formats. Fixed related bugs
+     with the format menu (which was not working at all)
+   - added PPM/PGM support using custom code
+   - fixed an important bug in the save thread: missing fd=NULL after fclose(fd)
+
+   Apr 14, 2005, by Damien Douxchamps
+   - disabled what is not working yet and what is not working anymore
+     (tiff, png, ...)
+	
+   Apr 13, 2005, by Damien Douxchamps
+   - added an ErrorPopup function to display popup warnings. Not used yet.
+	
+   Apr 11, 2005, by Damien Douxchamps
+   - added balloons all over the place.
+   - fixed minor GUI aspects
+	
+   Apr 7, 2005, by Damien Douxchamps
+   - added -Wall as compiler option; cleaned up what was reported
+   - added 'case' statements for some signed formats
+   - upgraded and fixed the pattern overlay
+
+   Apr 6, 2005, by Damien Douxchamps
+   - services cleanup: removed mode, format and f7 members from the buffer_t
+     structure
+	
+   Apr 5, 2005, by Damien Douxchamps
+   - first port to Gnome 2.x. Still on the todo list:
+	+ remove the two pango warnings at startup
+	+ replace GdkImLib which is deprecated
+   - the pango and slider bugs were actually machine-related. I don't have
+     any problem on an up-to-date machine. GdkImlib still missing though...
+   - UI adaptation to Gnome2
+   - minor UI beautification
+   - fixed some misbehaviour with the RAW8 and RAW16 formats
+	
+   Mar 18, 2005, by Damien Douxchamps
+   - fixed error messages in on_global_iso_start_clicked (thanks to Oscar
+     Pizarro for spotting this)
+	
+   Mar 7, 2005, by Damien Douxchamps
+   - updated the sponsors section: Point Grey Research and Balser have joined
+     the band!
+	
+   Feb 17, 2005, by Damien Douxchamps
+   - updated the sponsors information as The Imaging Source just donated
+     two cameras! :-)
+	
+   Feb 14, 2005, by Damien Douxchamps
+   - proper detection of the FFMPEG libraries
+   - Save to STDOUT. I hope I will have time to add mencoder auto-launch
+     in the future
+	
+   Feb 12, 2005, by Damien Douxchamps
+   - use dummy menu items to separate video/still formats
+   - update of the save filename selection
+
+   Feb 7, 2005, by Damien Douxchamps
+   - detect speed_800 in thread_iso
+   - optional 'no frame drop' behaviour for the image pipe
+   - JPEG/MPEG update. Should be working with YUV411 and YUV422
+
+   Feb 4, 2005, by Damien Douxchamps
+   - fixed wrong bytes per pixel in getDepth() (thread_save.c)
+   - updated the AUTHOR file
+   - updated macros to use mmx, sse amd sse2 flags
+   - reverted the application of Olaf Hering's patch as this slows down everything.
+   - small fixes.
+   - fixes hang when the file to save can't be opened
+   - fix the password field in FTP service which was not allocated (Duh!)
+	
+   Feb 3, 2005, by Damien Douxchamps
+   - MPEG integration. Not working yet, but compile. Note that there is NO autodetection
+     of the necessary libraries so that you may not be able to compile. In that case you
+     have to install ffmpeg from the sources.
+   - update the text of 'frame drop' frames
+
+   Feb 2, 2005, by Damien Douxchamps
+   - fixed missing 'void' in thread_save.h (Jacob Gryn)
+   - changed arg order for fwrite
+   - new save filename entry
+   - fixed a PVN issue (Jacob Gryn)
+   - fixed missing recall of 'use_ram_buffer'
+   - types are more explicit in the calculation of buffer_image_bytes (fixes YUV411 issue)
+   - patch from Olaf Hering
+	
+   Feb 1, 2005, by Damien Douxchamps
+   - fixed save-to-PVN
+	
+   Jan 31, 2005, by Damien Douxchamps
+   - little optimization of the Edge Sense bayer decoding
+   - added a few benchmarks in the bayer.c file
+   - stupid automatic insertion of march/mcpu compilation flags (it is currently
+     linked to the presence of SSE2, which is not false but not exactly correct either)
+   - automatically set 1394b operation mode if available
+	
+   Jan 29, 2005, by Damien Douxchamps
+   - more bayer update and optimization from Frederic Devernay
+	
+   Jan 28, 2005, by Damien Douxchamps
+   - fixed the non-blanked boundary line in ClearBorders (Frederic Devernay)
+   - updated the UI file (coriander.glade) regarding the 'save' filename
+     selection
+   - phatt bayer pattern update by Frederic Devernay.
+	
+   Jan 27, 2005, by Damien Douxchamps
+   - updated the TODO and BUGS files after receving inputs from Jacob Gryn.
+	
+   Jan 26, 2005, by Damien Douxchamps
+   - more efficient V4l thread for black and white mode
+   - save-to-dir is completed. This code is based on the patch of
+     Anthony Wesley which was modified to accomodate the cleaned-up
+     thread_save.
+	
+   Jan 18, 2005, by Damien Douxchamps
+   - continue cleanup
+	
+   Jan 17, 2005, by Damien Douxchamps
+   - started the cleanup of thread_save and the associated GUI controls
+   - applied a patch from Jacob Gryn for PVN
+	
+   Jan 5, 2005, by Damien Douxchamps
+   - merged the patch for PVN saving capability from Jacob Gryn
+	
+   Dec 27, 2004, by Damien Douxchamps
+   - little optimization of pattern overlay
+   - add [ and ] keys as controls for the image zoom
+   - begin integration of the patch for write-to-dir (Anthony Wesley)
+
+Changes in version 1.0.1
+	
+   Dec 20, 2004, by Damien Douxchamps
+   - updated the pattern overlay.
+	
+   Dec 17, 2004, by Damien Douxchamps
+   - removal of icons.h, which was somehow still lurking in the src directory
+	
+   Dec 16, 2004, by Damien Douxchamps
+   - pattern overlay is more or less OK now. There are problems with the YUYV block alignement
+     when writing pattern on the screen. I will fix this later.
+	
+   Dec 14, 2004, by Damien Douxchamps
+   - fixed problems with the Simple bayer conversion
+   - added black borders to Simple and Edge Sense II bayer conversions to blank
+     invalid pixels
+	
+   Dec 13, 2004, by Damien Douxchamps
+   - fixed the GTK errors
+   - fixed the filename dialogs
+   - fixed invalid bayer pattern IDs
+   - fixed receive/display segfaults/Xlib async's
+   - draw black border around image if color conversion is Edge Sense II
+	
+   Nov 26, 2004, by Damien Douxchamps
+   - properly fixed a conversion problem in y2rgb: the first pixel was never
+     converted. Now we use >=0 as the loop condition in most functions: faster
+     and better... (Frederic Devernay)
+	
+   Nov 25, 2004, by Damien Douxchamps
+   - fixed a conversion problem in y2rgb: the first pixel was never converted
+     (Frederic Devernay)
+
+   Nov 24, 2004, by Damien Douxchamps
+   - started to integrate Johann's enhanced display
+   - modified the filename dialogs to standard grome dialogs (not working yet)
+   - draft of an overlay feature
+	
+   Nov 11, 2004, by Damien Douxchamps
+   - update configure.in to avoid writing in a global dir during a local
+     installation.
+	
+   Nov 7, 2004, by Damien Douxchamps
+   - update of the 'About' window
+   - update the autoconf scripts
+   - add a preference for overlay byte order instead of #define's
+	
+   Oct 28, 2004, by Damien Douxchamps
+   - a check for the info->overlay!=NULL was added in the display thread.
+     Thanks to Will Shackleford for spotting the missing check.
+	
+   Sep 23, 2004, by Damien Douxchamps
+   - applied patch from Arne to properly handle UYVY overlays
+	
+   Sep 17, 2004, by Damien Douxchamps
+   - start to update coriander for IIDC 1.31
+
+Changes in version 1.0.0
+	
+   Sep 14, 2004, by Damien Douxchamps
+   - simplify and cleanup fps display
+	
+   Sep 13, 2004, by Damien Douxchamps
+   - corrected a small fps display problem
+	
+   Sep 10, 2004, by Damien Douxchamps
+   - add sync control of ISO
+	
+   Aug 10, 2004, by Damien Douxchamps
+   - removed extra argument for extra buffering, as this is now obsolete.
+   - move all version numbers to 1.0.0, as unless something ugly pops up this will
+     indeed be 1.0.0!! :-)
+	
+   Jul 28, 2004, by Damien Douxchamps
+   - applied a patch from Bertrand Holveck to copy the DMA buffer size during
+     CopyCameraPrefs
+	
+   Jul 24, 2004, by Damien Douxchamps
+   - applied a patch from Frederic Devernay to use gettimeofday instead of
+     ftime
+	
+   Jul 7, 2004, by Damien Douxchamps
+   - minimum DMA buffer size set to 4. 2 obviously leads to problems.
+	
+   Jun 2nd, 2004, by Damien Douxchamps
+   - fixed a nasty bug spotted by greying (see SF bugsite for details)
+	
+   Jun 1st, 2004, by Damien Douxchamps
+   - more fixes related to the preferences problem with strings
+	
+   May 19, 2004, by Damien Douxchamps
+   - debugged new bayer pattern decoder
+	
+   May 18, 2004, by Damien Douxchamps
+   - don't require extensions when in raw output format
+   - if BPP is zero, set the image size to the maximum value and try to get
+     BPP again. This is necessary with some AVT cameras with old firmware.
+   - first testing version of another simple bayer pattern decoder
+	
+   May 4, 2004, by Damien Douxchamps
+   - already a very serious fix related to preferences...
+	
+Changes in version 1.0.0-pre3
+
+   May 3, 2004, by Damien Douxchamps
+   - overlay size is now checked and should not go over the allowed XV size
+   - updated libdc version-checking macro
+   - added LFS support (thanks to Richard Cunningham for the tip!)
+   - all thread preferences are now camera-specific. Changing data on one
+     camera will not change it on other cams too.
+   - default values for video1394 device is automatically set to
+     /dev/video1394/<portnum>
+	
+Changes in version 1.0.0-pre2
+
+   March 30, 2004, by Damien Douxchamps
+   - update white balance control after changing the filter control. This
+     is necessary for some Sony cameras.
+	
+   March 25, 2004, by Damien Douxchamps
+   - default filename extension is .jpg, so we force conversion by default
+	
+   March 24, 2004, by Damien Douxchamps
+   - fixed a warning when gdk_pixbuf is not installed.
+	
+   March 15, 2004, by Damien Douxchamps
+   - fixed some declaration order issues with older compilers.
+	
+   March 4, 2004, by Johan Knol
+   - src/SDLEvent.c (OnKeyPressed): (partially) fixed the '<' and '>' 
+	key binding modifiers and added SDLK_PAGEUP/DOWN as an alternative 
+	for '<' and '>' on non-damien :) keyboards.
+	
+   February 24, 2004, by Johan Knol
+   - src/thread_display.c (SDLDisplayArea): another fix for odd width MONO8
+	when drawing the selection
+   - src/conversions.c (y2uyvy): fixed bug #887745
+	
+   February 20, 2004, by Damien Douxchamps
+   - adapt to libdc change.
+
+   February 16, 2004, by Damien Douxchamps
+   - check adaptor presence during Xv adaptor probe (suggested by
+     Arne Caspari)
+   - set Xv sizes to -1 by default before Xv adaptor probe.
+	
+   February 5, 2004, by Damien Douxchamps
+   - updated the linux1394 URL
+
+   February 4, 2004, by Damien Douxchamps
+   - fixed trigger polarity bug
+	
+   February 3, 2004, by Damien Douxchamps
+   - enhance the previous change by Johan: keep aspect ratio and avoid
+     async errors when an area is selected during F7 the change.
+	
+   February 2, 2004, by Johan Knol
+   - now builds without sdllib (and thus without the display service ;( )
+   - resizing from the format7 tab now redraws the live display in the bg
+	
+Changes in version 1.0.0-pre1
+
+   January 31, 2004, by Damien Douxchamps
+   - added an X check for the maximum overlay size.
+
+   January 30, 2004, by Damien Douxchamps
+   - removed debug message
+
+   January 28, 2004, by Damien Douxchamps
+   - defined DELAY as 50ms delay and make it standard for almost
+     all the pauses we use.
+   - add a 50ms pause in the ISO start/stop callbacks, following the
+     suggestion of Matt Scott.
+   - limit the display sizes when using > or <.
+   - temporary debug message for conditional display redraw.
+	
+   January 26, 2004, by Damien Douxchamps
+   - logo update
+   - icons are now exported to the WM
+	
+   January 23, 2004, by Damien Douxchamps
+   - new logo
+	
+   January 22, 2004, by Damien Douxchamps
+   - bus resets are now detected on all ports.
+   - fixed cameras that showed up twice when using strange bus
+     topologies
+	
+   January 21, 2004, by Damien Douxchamps
+   - Bypassed problems when F7 BPP is zero. This only happens with
+     Sony camera, for unknown reasons.
+   - removed warning messages on stdout: it was a libdc/camera
+     problem
+	
+   January 16, 2004, by Damien Douxchamps
+   - introduced a new logo
+   - removed handleboxes due to bad behaviour.
+	
+   January 15, 2004, by Damien Douxchamps
+   - debugging versioning issues in format7 registers
+   - added some debug outputs
+	
+   January 9, 2004, by Damien Douxchamps
+   - debugging format7 unit position
+   - fixed configure bug
+	
+   January 8, 2004, by Damien Douxchamps
+   - removed obsolete format7 info duplicate in the camera struct
+	
+   January 7, 2004, by Damien Douxchamps
+   - update error message for gnomeConf.sh
+	
+   January 6, 2004, by Damien Douxchamps
+   - misc cleanup
+	
+   January 3, 2004, by Damien Douxchamps
+   - added a service report to detect frame dropping
+	
+   December 29, 2003, by Damien Douxchamps
+   - little cleanup
+	
+   December 28, 2003, by Damien Douxchamps
+   - fixed format7 interactive changes issues.
+
+   December 27, 2003, by Damien Douxchamps
+   - inline format7 tab generation
+   - passwords are no longer stored
+   - camera port is shown next to camera handle
+   - misc label changes
+	
+   December 25, 2003, by Damien Douxchamps
+   - fixed configure scripts, at last.
+   - more accurate way to get the bandwidth usage in case of format7
+	
+Changes in version 0.99.9
+
+   December 24, 2003, by Damien Douxchamps
+   - added bandwidth estimation graph
+   - fixed SDL close bug
+   - fixed camera hotlug segfault
+   - fixed FPS display bug
+	
+   December 23, 2003, by Damien Douxchamps
+   - fixed issues with non-format7 cameras
+
+   December 21, 2003, by Damien Douxchamps
+   - the information about the format7 frame is now updated
+   - little change in layout: camera info is now on first tab.
+	
+   December 16, 2003, by Damien Douxchamps
+   - properly restart ISO after camera removal
+   - fix problem when switching images sizes with 'm' key
+   - echo bus reset notification in status window
+	
+   December 16, 2003, by Damien Douxchamps
+   - update the way interactive boxes are defined (F7 cropping)
+   - fixed some other issues, including some serious ones.
+	
+   December 15, 2003, by Damien Douxchamps
+   - fixed temp buffer pointer problem in thread_iso.c
+   - updated the way values are rounded for format7 controls
+	
+   November 21, 2003, by Damien Douxchamps
+   - fixed configure macros
+
+   December 8, 2003, by Damien Douxchamps
+   - fixed compilation problems with recent kernels (by Peter De Schrijver)
+   - fixed C/C++ compilation errors
+	
+Changes in version 0.99.5
+
+   November 20, 2003, by Damien Douxchamps
+   - more flexible timeout for ISO restart
+   - check ISO status after changing it
+   - update bpp range when changing WOI with 'n' or area drawing.
+   - update code about F7 bpp and WOI size/pos changes
+   - display IIDC version hex code when it is not standard
+	
+   November 17, 2003, by Damien Douxchamps
+   - update to match latest libdc1394 CVS.
+   - fixed FPS update issue when changing mode/format
+   - go around problems with Apple iSight incomplete hardware.
+   - flush help menu to the right of the window
+   - little FPS update fix
+	
+   November 15, 2003, by Damien Douxchamps
+   - fixed bad F7 mode detection that caused segfault when accessing the
+     F7 tab with a non-F7 camera connected.
+	
+   October 30, 2003, by Damien Douxchamps
+   - changed all strings allocation to dynamic to limit the use of static
+     memory.
+	
+   October 22, 2003, by Damien Douxchamps
+   - change bpp type to float in SetColorMode (thread_iso.c) Thanks to
+     Frederic Devernay.
+
+Changes in version 0.99.4
+
+   October 17, 2003, by Damien Douxchamps
+   - force SDL to try hardware acceleration. Thanks to Frederic Devernay.
+	
+   August 29, 2003, by Damien Douxchamps
+   - Fixed global iso control
+   - Homogenous tab size for notebooks
+   - cleanup main.c
+
+   August 27, 2003, by Damien Douxchamps
+   - Fixed trigger mode menu, at last. Thanks to Rich Walker for pointing
+     this out.
+
+Changes in version 0.99.3
+
+   August 25, 2003, by Damien Douxchamps
+   - fixed a bug in SDL_init that broke the display resize.
+	
+   August 18, 2003, by Damien Douxchamps
+   - fixed stupid businfo allocation in main.c
+   - fixed empty trigger menu if cam does not support ext trigger
+
+   August 16, 2003, by Damien Douxchamps
+   - added missing mutex init during in NewCamera()
+	
+   August 8, 2003, by Damien Douxchamps
+   - fixed a little GTK problem during camera addition on the bus.
+	
+   August 7, 2003, by Damien Douxchamps
+   - F7 available modes are probed correctly. There was a bug in the
+     F7 detection after a unplug/replug event. Thanks to Arne Caspari
+     for spotting this.
+	
+   July 18, 2003, by Damien Douxchamps
+   - format7 mode 7 could not be seen in the F7 tab/mode selector
+   - added format tags for mode names in the format menu
+	
+   July 17, 2003, by Damien Douxchamps
+   - fixed white balance sliders that were not updated
+	
+Changes in version 0.99.2
+
+   July 10, 2003, by Damien Douxchamps
+   - better strategy for buffers allocation in thread_iso.c
+   - the type of the number of bytes per image is now uniformly set to
+     'unsigned long long int'
+   - SDL setup update
+	
+   July 7, 2003, by Damien Douxchamps
+   - removed stupid declaration that breaks with gcc2.x
+   - updated the ftplib URL (thanks to Matthew Costello)
+   - fixed sensitivity of absolute setting whan feature is set to OFF.
+   - fixed missing break in thread_save (overwrite saving was not
+     possible).
+	
+   July 2, 2003, by Damien Douxchamps
+   - sync with libdc CVS.
+	
+Changes in version 0.99.1
+
+   June 30, 2003, by Damien Douxchamps
+   - additional condition for dc1394_dma_done_with_buffer: capture must
+     have been successful. Another Dan's idea.
+   - added SDL_GetError calls during setup + other SDL updates (John Lien)
+	
+   June 21, 2003, by Damien Douxchamps
+   - added a buffer copy when forcing an image redraw so that is keeps
+     working on display resize.
+   - added controls for the forced display redraw
+	
+   June 19, 2003, by Damien Douxchamps
+   - added a minimal display redraw rate of 4Hz. This avoids display
+     'freeze' or blanking when the window is moved or overlapped while
+     no images are coming to the thread.
+   - move the usleep(0) in the threads at the right location (that is, at
+     the end of the while loop)
+	
+   June 17, 2003, by Damien Douxchamps
+   - added a control for DMA buffer size.
+   - misc fixes in preferences
+   - major fix in file saving
+	
+   June 16, 2003, by Damien Douxchamps
+   - fixed the difference between bytes per image (w*h*bpp) and
+     byte_per_frame. This caused incorrect sizes to be used whe saving in
+     RAW mode.
+   - fixed use_ram_buffer field that was not set 'off' when another save
+     mode was selected.
+	
+Changes in version 0.99
+
+   June 13, 2003, by Damien Douxchamps
+   - added a RAM buffer option for saving sequences. The whole sequence is
+     first dumped to RAM, and when the allocated buffer is full the thread
+     exits and save everything to the file. Good for fast acquisitions.
+     There is still a little problem: one needs to 'stop' the thread
+     manually (click on the service button) to really clean it. The thread
+     can't cancel itself but I'll look into that.
+   - unsensitive the controls that can't be changed while a thread is
+     running.
+   - fix bad return values for startftpthread()
+	
+   June 12, 2003, by Damien Douxchamps
+   - fixed some problems in transmission of GUI parameters to threads
+   - removed some free() in main.c that prevented the program from exiting
+     on some platforms. Weird stuff...
+   - fixed availability of the imlib conversion in the save thread setup
+	
+   June 11, 2003, by Damien Douxchamps
+   - added a choice between date and numbers tags for sequential save/ftp.
+   - fixed bug from the above change.
+	
+   June 5, 2003, by Damien Douxchamps
+   - fixed segfault when no card/modules were present
+	
+   June 3, 2003, by Damien Douxchamps
+   - fixed the closing of a non-existant window in the bus-reset handler.
+   - video1394 is always available. If it fails an error message will be
+     displayed anyway.
+	
+Changes in version 0.33
+
+   June 3, 2003, by Damien Douxchamps
+   - fixed framerate limitation of 50fps that was present in all bu the ISO
+     service. I was using usleep(1) instead of usleep(0).
+
+   June 2, 2003, by Damien Douxchamps
+   - fixed uninitialized 'updated' field in the chain_t struct. This sometimes
+     caused crashes when changing mode/format/F7 parameters.
+   - fixed a display problem: SDL was shut down even if no images had reached
+     the display thread.
+   - re-set ISO channels after a bus-reset.
+   - misc GUI updates
+	
+   June 1, 2003, by Damien Douxchamps
+   - first implementation of a bus-reset handling process
+	
+   May 30, 2003, by Damien Douxchamps
+   - removed absolute control window. Absolute controls are now in placed
+     in their respective range frame.
+   - fixed not-so-obvious-but-definitely-harmful F7 bugs.
+	
+   May 28, 2003, by Damien Douxchamps
+   - fixed missing #includes in thread_display.h. Thanks to Marc Leconte
+     for spotting this.
+   - changed main window name to 'main_window' instead of 'commander_window'
+     this was a legacy name from version 0.01...
+   - removed the iso_speed status info box
+   - removed the shortcut patch file 'interface.patch' and 'interface.mods'
+     since this is not used anymore.
+   - moved F7 window into a main window tab
+   - handle bars added to all tabs so those become detachable.
+
+   May 27, 2003, by Damien Douxchamps
+   - misc updates in the save service.
+   - added warning window for V4L service.
+   - the display window can now be closed with the WM button.
+   - fixed cursor frame update (put it in gtk callback instead of access a
+     gtk function in a thread which breaks everything).
+	
+   May 26, 2003, by Damien Douxchamps
+   - FPS display now takes into account the period setting.
+   - V4L loopback test & debug. It works!! Only 3 hours to develop this new
+     service! :-)
+   - First prototype of vloopback service, based on the very nice example
+     by Dan Dennedy found in libdc1394.
+	
+   May 25, 2003, by Damien Douxchamps
+   - another big change and cleanup: the cameras information are now
+     allocated dynamically and the cameras are linked as a chain. This will
+     allow the handling of bus-resets where cams need to be inserted/removed.
+     This bus-reset handling is under development.
+	
+   May 21, 2003, by Damien Douxchamps
+   - new feature controls autogeneration. Still experimental, but seems to
+     work well.
+	
+   May 17, 2003, by Damien Douxchamps
+   - fixed F7 issue with non-F7 cameras. Thanks again to inet for spotting
+     this.
+	
+   May 16, 2003, by Damien Douxchamps
+   - added missing <pthread.h> in definitions.h. Thanks to inet for spotting
+     this.
+	
+Changes in version 0.32
+	
+   May 13, 2003, by Damien Douxchamps
+   - switched to "configure" instead of "autogen.sh" for building Coriander
+     from a tar.gz file. CVS is not changed.
+	
+   May 12, 2003, by Damien Douxchamps
+   - more F7 mode selection update
+	
+   May 9, 2003, by Damien Douxchamps
+   - automatically set the F7 edit mode to current F7 mode when changing mode
+     or format to an F7 mode/format.
+   - added return(NULL) to XXCleanupThread functions.
+	
+   May 2, 2003, by Damien Douxchamps
+   - code cleanup: includes in .h, misc beautifications. This will result in
+     ugly and noisy diffs!
+	
+   May 1, 2003, by Damien Douxchamps
+   - service/save: update scratch frame correctly at boot/camera change (video
+     pref was ignored)
+   - add global ISO start/stop/restart to start grabbing from multiple cameras
+     at the 'same time'. Note that it is NOT EXACTLY THE SAME TIME: a delay of
+     50ms seems necessary between ISO starting commands.
+	
+   April 30, 2003, by Damien Douxchamps
+   - stop/resume FPS display when changing camera
+   - fixed big multicamera problem: all threads were sharing the same uiinfo,
+     misc_info,... Threads now use uiinfos[x_service->camera] instead, where
+     x_service->camera is a new field of the chain_t struct whih is initialized
+     at the tread creation. Thanks to Vincent Girondel for his numerous bug
+     reports! :-)
+	
+   April 29, 2003, by Damien Douxchamps
+   - fixed absolute value update when moving the normal control sliders
+   - fixed service buttons update on camera change
+	
+   April 28, 2003, by Paul Rybski
+   - fixed conversion bug for YUV444->RGB mode.
+	
+   April 25, 2003, by Damien Douxchamps
+   - absolute values are updated when moving the normal control sliders
+	
+   April 22, 2003, by Damien Douxchamps
+   - removed most of err=dc1394... schemes by if (dc1394...!=DC1394_SUCCESS)
+   - removed Real service, as it never worked and now all the Real system
+     has changed, making it completely obsolete.
+	
+Changes in version 0.31
+
+   April 19, 2003, by Damien Douxchamps
+   - fixed the automatic iso restart when changing format,...
+   - fixed freeing of unallocated buffer structs in threads 
+   - changed status statusbar to textbox so it acts like a log.
+   - fixed '-0.00' display of FPS.
+   - fixed segfault when a service could not start. Failure is now logged.
+   - removed CleanThreads() function, it is now useless thanks to the new
+     buffer structure.
+   - changed the failure messages for iso service
+	
+Changes in version 0.30
+
+   April 14, 2003, by Damien Douxchamps
+   - fixed big fat hairy YUV422 bug. Thanks again to Laurent and Vincent.
+	
+   April 10, 2003, by Damien Douxchamps
+   - new GUI layout
+	
+Changes in version 0.29
+
+   April 9, 2003, by Damien Douxchamps
+   - fixed a display color bug with YUV 422 modes. Thanks to Laurent
+     Bonnaud for spotting this.
+	
+   March 31, 2003, by Damien Douxchamps
+   - added a stereo 'field' decoding format
+   - stereo decoding allowed for YUV422 too (compatibility with Videre
+     Design stereo heads)
+	
+   March 10, 2003, by Damien Douxchamps
+   - added missing 'fclose' in thread_save.c 
+   - removed *10 allocation used in debug in thread_iso.c
+	
+Changes in version 0.28
+
+   March 6, 2003, by Damien Douxchamps
+   - image color format is now coded in the iso thread with F7 color codes.
+     It is no more required to check format/mode to have color info in
+     following threads.
+   - big buffer structure cleanup. Hopefuly this now works 100%
+   - moved window menu in the file menu. 
+	
+   March 4, 2003, by Damien Douxchamps
+   - only restart SDL if display size changes
+   - only re-allocated thread-specific buffers if their size change.
+   - remove test pattern button as if sometimes freeze the cameras.
+	
+   February 28, 2003, by Damien Douxchamps
+   - fixed compiling issues with gcc 2.95
+   - fixed a bug with the recently introduced buffer structure (display...
+     threads created a segfault if images were not immediately available)
+	
+   February 27, 2003, by Damien Douxchamps
+   - image filenames for save and FTP have a date/time appened instead
+     of a long number. This date/time is the computer local time when
+     the ISO thread got the frame (it is thus NOT the true capture time)
+     The format is YEARMONTHDAY-HOURMINUTESECOND-MILLISECOND.
+   - fixed NaN fps display.
+	
+   February 25, 2003, by Damien Douxchamps
+   - improved image buffer structure, allows to change some parameters
+     without restarting the thread.
+
+   December 2, 2002, by Damien Douxchamps
+   - an awful bug that makes bayer color decoding end with a beautful
+     segfault has been corrected.
+	
+Changes in version 0.27.1
+
+   November 27, 2002, by Damien Douxchamps
+   - Sync with libdc
+	
+   November 24, 2002, by Damien Douxchamps
+   - updated the macro file to check for a recent libdc.
+	
+Changes in version 0.27
+
+   November 20, 2002, by Damien Douxchamps
+   - Make a full update of the camera capabilities when we change the
+     mode or format.
+	
+   November 19, 2002, by Damien Douxchamps
+   - Use gnome timeout functions to display FPS.
+	
+   November 18, 2002, by Damien Douxchamps
+   - updated F7 code window build/update. This was messy because there
+     was among others some circular references (and a lot of other
+     things).
+	
+   November 2, 2002, by Damien Douxchamps
+   - updated F7 code: a bug had been introduced on Oct. 31, plus
+     some better handling of F7 control via SDL.
+	
+   October 31, 2002, by Damien Douxchamps
+   - misc code beautification in thread_iso.c
+   - replaced all 'if (!dc1394_xxx)' by 'if (dc1394_xxx!=DC1394SUCCESS)
+   - changed format7 window ranges layout
+   - updated some text in the messages/about windows.
+	
+   October 24, 2002, by Damien Douxchamps
+   - updates to take unit_position into account.
+	
+   October 23, 2002, by Damien Douxchamps
+   - added an absolute setting functionality through a new
+     "Absolute Settings" window.
+	
+Changes in version 0.26
+
+   October 16, 2002, by Damien Douxchamps
+   - fixed convert button behavior for save service 
+	
+   October 15, 2002, by Damien Douxchamps
+   - changed step_x to step_y for the F7 range Y setting.
+	
+   September 30, 2002, by David Ergo
+   - move dma_done_with_buffer at the end of IsoThread.
+	
+   September 27, 2002, by David Ergo
+   - swapped dma_release and dma_unlisten functions in thread_iso.c
+	
+   September 24, 2002, by Damien Douxchamps
+   - first implementation of an live fps display. Nothing is shown
+     right now because I can't get it to work with GTK. You can 
+     uncomment some fprintf in the threads to have a console output.
+	
+   September 12, 2002, by Damien Douxchamps
+   - some F7 update about color mode changes
+   - more bpp debugging
+	
+   September 11, 2002, by Damien Douxchamps
+   - added 'format_7' to f7 modes string in format menu.
+   - little bit-per-pixel sensitiveness correction
+   - update byte-per-packet when changing F7 mode
+	
+   September 10, 2002, by Damien Douxchamps
+   - added a bpp setting to get nice pictures from 16bpp modes used
+     by less-than-16bpp cameras.
+	
+   September 7, 2002, by Damien Douxchamps
+   - corrected a bug in RGB to UYVY conversion function (column
+     swapping)
+	
+   September 4, 2002, by Damien Douxchamps
+   - set sensitiveness of stereo decoding button
+   - use custom names for display window title
+   - don't use "node %d" for default camera names as the node number
+     is then memorized as preferences, which in turns leads to the
+     possibility that two camera names will contain the same node id.
+	
+   September 3, 2002, by Damien Douxchamps
+   - Stereo image decoding added (16bit->8+8bit)
+	
+   August 26, 2002, by Damien Douxchamps
+   - typo in Bayer menu corrected
+   - small bayer code beautification
+	
+   August 23, 2002, by Damien Douxchamps
+   - added RGGB and GBRG bayer patterns. The pattern list is now
+     exhaustive.
+	
+   August 22, 2002, by Damien Douxchamps
+   - added sensitiveness check for bayer menus. These are now only
+     accessible when the mode is greyscale (8 or 16bpp)
+	
+   August 21, 2002, by Damien Douxchamps
+   - fixed a bug in nearest neighbor conversion (sx instead of sy...)
+     Thanks to Xiong Quanren.
+   - added a function to decode one 16bit stereo pair into two 8bit
+     images
+	
+   - added bayer decoding with format_7
+   - added alternative bayer decoding. Two patterns are now supported:
+       BGGR: B G    and    GRBG: G R
+	     G R                 B G
+   - added another bayer decoding method that simply downsamples
+     the image by a factor 2, using 4 bayer pixels to get 1 RGB pixel.
+	
+   August 20, 2002, by Damien Douxchamps
+   - support Y16 in bayer decoding
+   - support PointGrey cameras (require libdc CVS 21-08-2002)
+
+   August 14, 2002, by Damien Douxchamps
+   - linked bayer decoding functions. You have to restart the 
+     services in order for the bayer options to be taken into account. 
+	
+   August 13, 2002, by Damien Douxchamps
+   - removed format6 window prototype
+   - started integration of Bayer pattern decoding functions
+   - debugged Bayer pattern decoding functions.
+	
+   August 12, 2002, by Damien Douxchamps
+   - New layout: more compact
+   - New format selection menu: now you can see the current format (!)
+   - removed all images in pixmap directory: we don't use these anymore.
+     (This is partly because I don't want to advertise Sony anymore)
+	
+   August 9, 2002, by Damien Douxchamps
+   - Added another function to descramble Bayer pattern (Edge Sense 2).
+     Not linked, currently for testing/devel only.
+	
+   August 6, 2002, by Damien Douxchamps
+   - more fixes for initial segfault when no card/modules are present
+	
+   August 5, 2002, by Damien Douxchamps
+   - updated macros/coriander-macros.m4 to check for latest changes
+     in libdc1394.
+   - Applied Ryutaroh Matsumoto's patch for NULL pointer segfault in
+     tools.c/MainError. Added the same if (commander_window!=NULL) to
+     tools.c/MainStatus for safety.
+	
+   July 29, 2002, by Damien Douxchamps
+   - added a cursor information in the main window. Needs some
+     improvements for some things behave in a strange way (a
+     'void' fprintf is required in UpdateCursorFrame to make it
+     work...) 
+   - corrected an error detection bug: was checking for err==0
+     while it should be err<0. This implied some other changes
+     to functions that used error detection combinations. Thanks
+     to L.C.Bruzenak and Dan for pointing it out.
+	
+   July 28, 2002, by Damien Douxchamps
+   - removed some problematic g_free that hanged coriander.
+	
+   July 27, 2002, by Dan Dennedy
+   - added video1394 drop frames preferences option to sync with 
+     new option in libdc1394.
+
+   July 15, 2002, by Damien Douxchamps
+   - added #ifdef HAVE_SDLLIB for watchthread related code
+	
+   July 8, 2002, by Damien Douxchamps
+   - use raw1394_get_port_info to get the number of ports, as Dan
+     Dennedy suggested.
+	
+   July 5, 2002, by Damien Douxchamps
+   - Updated the status window
+   - changing the name affects the menu immediately.
+   - updated the preferences mechanism. You don't need to push the
+     'apply' button anymore
+	
+   July 4, 2002, by Damien Douxchamps
+   - Multiple interface card support, beta version.
+   - you can now name any connected camera. The choosen name
+     will appear in the camera list menu and should help to
+     distinguish between different cameras, even after bus reset or
+     power off. It is based on GUID recognition. The name is saved
+     in the config file with other preferences.
+	
+Changes in version 0.25
+
+   July 2, 2002, by Damien Douxchamps
+   - Capture bugfixes from Clay Kunz.
+	
+   July 1, 2002, by Damien Douxchamps
+   - added a basic function fo Bayer pattern decoding (for Basler
+     cameras)
+	
+   Apr 15, 2002, by Damien Douxchamps
+   - changed the raw output selection: it is now an option in the
+     preferences window. The 'raw' extention is no longer mendatory. 
+   - added a 'sequence' option in the scratch options for saving.
+     Selecting this option will let you write continuous video
+     sequences to disk. This mode is only available with raw dumping
+     option. 
+   - updated and applied Dan's patch for interface.c.
+	
+   Apr 08, 2002, by Damien Douxchamps
+   - Fixed a serious bug in propagation of images within the image
+     pipe. This leaded to duplicate images in file saving,...
+	
+   Mar 28, 2002, by Damien Douxchamps
+   - updated version check macro for libdc1394.
+	
+   Mar 26, 2002, by Dan Dennedy
+   - change calls to raw1394_destroy_handle to dc1394_destroy_handle
+     requires updated libdc1394 from CVS.
+
+   Mar 24, 2002, by Damien Douxchamps
+   - finished the interactive region selection for F7.
+   - added the 'm' shortcut to switch to max size in F7.
+	
+   Mar 23, 2002, by Damien Douxchamps
+   - changed the F7 range update policy to 'delayed': the value only
+     changes when the mouse does not move. This avoid continuous
+     format changes and allow the threads to be restarted a reasonable
+     number of times.
+   - the ranges for F7 now respect the stepping values thanks to some
+     range tweaking.
+	
+   Mar 21, 2002, by Damien Douxchamps
+   - added a key bindings window in the help menu.
+
+Changes in version 0.24:
+
+   Mar 18, 2002, by Damien Douxchamps
+   - corrected a bug in the strings: the program crashed when a
+     preference string was changed twice. Thanks to 'inet' SF user.
+	
+   Mar 17, 2002, by Damien Douxchamps
+   - started to implement an interactive format selection for
+     format7. This is necessary because the sliders do not respect
+     the 'step' argument the way I wanted. Currently, you can draw
+     a window using the left mouse button, and you can clear it
+     by pressing 'c'. the 'c' key will be used for cropping.
+	
+   Mar 16, 2002, by Damien Douxchamps
+   - added GUID display in status window
+   - more F7 debug (ranges adjustments)
+	
+   Mar 15, 2002, by Damien Douxchamps
+   - lots of bugfixes for format7, trigger, and user interface.
+   - more bugfixes for format7 color coding.
+	
+   Mar 5, 2002, by Damien Douxchamps
+   - updated the capture function calls for Format7 compatibility.
+     This is just a quick hack, it will be tested further.
+	
+   Mar 4, 2002, by Damien Douxchamps
+   - corrected a bug in the timeout loops (added '==DC1394_TRUE')
+	
+   Feb 27, 2002, by Damien Douxchamps
+   - added some code to the color conversion functions so that
+     they now work with format7.
+   - updated the color conversion functions, again... The problems
+     encountered by some users are related to the video card, so
+     I set the default SDL mode to YUY2, and changed the color
+     conversion accordingly.
+	
+   Feb 19, 2002, by Damien Douxchamps
+   - Updated the Real functions that would not compile anymore.
+	
+   Feb 18, 2002, by Damien Douxchamps
+   - the color problem is in SDL, not in coriander. Stay tuned.
+   - small config bugs corrected
+	
+   Feb 14, 2002, by Damien Douxchamps
+   - more color conversion bugs corrected. Will this ever end?
+   - removed a "/n" in build_menus.c
+	
+Changes in version 0.23:
+
+   Feb 11, 2002, by Damien Douxchamps
+   - finished gnome-config integration
+   - corrected minor bugs, as usual.
+	
+   Feb 8, 2002, by Damien Douxchamps
+   - more configure macros update: added MMX/SSE/SSE2 detection for
+     future assembler-optimized conversion functions. Also separate
+     presence/version detection for libdc1394 and libraw1394
+   - added a raw dumping option for the save thread: if the filename has
+     an extension '.raw', the raw frame data is saved in binary format
+     into the file, without any processing. This should be useful for
+     people having 10 or 12 bit cameras.
+   - updated some string alloc/free introduced by gnome-config
+   - corrected some more conversions errors.
+	
+   Feb 6, 2002, by Damien Douxchamps
+   - small changes to configure macros.
+   - changed some GUI layout in the preferences window
+   - added the shading of the audience frame (real preferences)
+   - added the shading of the video device field (receive preferences)
+   - upgraded the preferences parser to gnome-config, as suggested by Dan.
+     This parser is *much better* indeed... Why reinvent the wheel? 
+   - updated configure macros for libdc version
+	
+   Jan 27, 2002, by Damien Douxchamps
+   updated the conversion functions:
+     - optimized (in C, no MMX/SSE yet)
+     - structured a full set of functions to pass from any IIDC format
+       to UYVY and RGB (24bpp)
+     - 16bpp grayscale modes are now supported, but Format_7 is still
+       to be done. For 16bpp grayscale and 48bpp RGB, only the MSB is used
+       with REAL and DISPLAY services. A function to dump raw data for
+       saving to disk/ftp will be added.   
+
+   Jan 31, 2002, by Dan Dennedy
+     - Added video1394_device to preferences struct and preferences
+       window. Coriander now requires CVS version of libdc1394
+       until a new version is released. The CVS version of libdc1394
+       also includes an updated kernel-video1394.h header. Therefore,
+       for video1394 support, you must also be running ieee1394 from
+       kernel 2.4.17 or linux1394 CVS since Oct 21.
+     - added interface.patch file to be run against interface.c whenever
+       Glade regenerates the code. The patch adds keyboard accellerator
+       support to menus. This is easier to maintain than the manual
+       instructions described in interface.mods.
+     - prereferences window save function does not attempt to read
+       widgets when RealServer/SDK not installed. Doing so creates
+       empty values in the config file, and the config file parser 
+       fails. Also, revised default values of some preferences items
+       to replace spaces with underscores. The spaces also choke
+       the config file parser. A better parser is needed. Why not 
+       use gnome-config?
+	
+Changes in version 0.22:
+
+   Jan 23, 2002, by Damien Douxchamps
+   - created some new macros for configure.in. The script now detects SDL
+     properly, and also checks for libraw1394 and libdc1394.
+	
+   Jan 2, 2002, by Damien Douxchamps
+   - removed individual string size, replaced by STRING_SIZE.
+	
+   Dec 31, 2001, by Damien Douxchamps
+   - connected the trigger count widget.
+   - changed the iso channel numbering policy: we now set
+     iso_channel=node_id. This prevents serveral occurences of
+     Coriander to mess with each other.
+   - removed last GDK stuff in main.c
+	
+   Dec 29, 2001, by Damien Douxchamps
+   - updated the real_audience preference: it should be a set of
+     flags, not a single value.
+   - node number and vendor added in camera name within the camera menu.
+
+   Dec 28, 2001, by Damien Douxchamps
+   - Added "keep aspect ratio" option for SDL resize
+   - Moved some code from UpdatePrefs*Frames to BuildPrefs*Frame to
+     avoid lockups
+	
+   Dec 25, 2001, by Damien Douxchamps
+   - removed Xv and GDK display methods and associated controls
+
+Changes in version 0.21:
+   
+   Dec 24, 2001, by Damien Douxchamps
+   - SDL #ifdef debugged by Mark Hessman
+   - screen can be resized in SDL.
+   - added some keybindings to the SDL display:
+     >: double size
+     <: half size
+     n: normal size
+     f: toggle fullscreen mode
+   - WARNING: due to the flexibility, stability, functionalities,
+     performance (MMX optimized!) and ease of use of SDL, further
+     versions of coriander will ONLY use it for display. This should
+     not be a major issue because:
+     - SDL nicely integrates overlay like Xv (for those who used Xv)
+     - GDK display does not work on multithreaded programs anyway.
+       Those who could not even use GDK will thus enjoy SDL.
+     - SDL is available on every major platform.
+     Coriander 0.21 is thus the last version to use Xv and GDK
+     explicitely.
+
+Changes in version 0.20:
+
+    Dec 21, 2001, by Damien Douxchamps
+    - A lot of debugging...
+    - first implementation of an SDL display. No fullscreen or other
+      fancy things: just a display. The rest will come later. 
+    - added the name of the camera as porthole window title
+	
+    Dec 19, 2001, by Damien Douxchamps
+    - Some compilation problems with gcc 2.91 cleaned after some input
+      from Rick Philbrick.
+	
+    Dec 16, 2001, by Damien Douxchamps
+    - changed all ranges look: replaced (radio-) buttons by a
+      option_menu. A lot of code was updated.
+    - moved the zoom, focus, tilt and pan functions to the main window
+      notebook (a tab has been added). This will allow SDL display (in
+      a distant future) and also multi-display (several cams and
+      several displays handled by a single coriander program).
+    - removed a lot of unsused callbacks.
+    - added a period function to display and real threads, make the
+      ones of save and ftp functionnal. Every image service can now run
+      with its own framerate. The latter is a multiple of the receive
+      service framerate (= camera framerate): 1/1, 1/2, 1/3, 1/4,... 
+    - removed immediate/periodic modes because immmediate is the same
+      as a period of 1.
+	
+    Dec 14, 2001, by Damien Douxchamps
+    - make Real preference dialogs available only if Real is available
+    - added a Real streaming service. This is not yet tested.
+	
+    Nov 26, 2001, by Damien Douxchamps:
+    - added handle release and thread cleanup at the end of main.c
+	
+    Nov 20, 2001, by Damien Douxchamps:
+    - added some #ifdef HAVE_FTPLIB to avoid compilation problems.
+	
+    Nov 12, 2001, by Damien Douxchamps:
+    - updated the thread mechanism to allow multi-camera. Yeah, that
+      feature had disappeared...
+    - new small procedure to allow cameras to use different channels.
+      This allows the use of several cameras threads at the same
+      time. There is no support for multi-display at this time (i.e.
+      running several coriander on several cams on one linux box).
+    - change of formats and fps now works.
+    - did some more cleanup of the code.
+
+Changes in version 0.19b:
+
+    Nov 26, 2001, by Damien Douxchamps:
+    - new layout using "notebook" widget
+	
+Changes in version 0.19:
+
+    Nov 6, 2001, by Damien Douxchamps:
+    - MASSIVE code update/cleanup for threads. A little bit beta, but
+      probably worth a try... I have designed a new structure as image
+      pipe: images walk along this pipe and are successively used by
+      different processes (threads). These threads currently are:
+	iso: produces images at the beginning of the pipe (server)
+	display: displays images on the screen (client)
+	save: saves an image to a local file (client)
+	ftp: sends an image on a ftp site (client)
+	(a Real streaming client will be added in the future)
+      About 30% of the code has been changed: you bet there'll be bugs
+      lurking around! Please send some feedback about those... :*)
+    - FTP is now working.
+    - Due to the massive change in threads, some features have been moved
+      to the preferences window. The capture window is now rather small...
+	
+    Oct 29, 2001, by Damien Douxchamps:
+    - little cleanup/update of threads
+    - first implementation of the preferences window. Use of a config
+      file (~/.coriander).
+    - removed unused items in menus like file saving.
+	
+Changes in version 0.18:
+
+    Oct 26, 2001, by Damien Douxchamps:
+    I did a large change concerning the capture and display: ISO receive
+    and display threads have been changed from GTK threads to pthreads.
+    This improves performances and avoid the locking bug of the external
+    trigger function. A quick explaination: GTK thread are NOT real
+    threads: if you use 'top' you will only see one process, even if
+    several of these threads make Coriander. Real threads, on the other
+    hand, will create multiple processes sharing the same memory space.
+    It's better because 1) if a thread locks itself (e.g. waiting for a
+    frame to come after a trigger), it will not lock the whole program
+    and 2) several functions can be done at the same time (e.g. making
+    continuous adjustments with sliders does not block the display). I
+    noticed some better performance in general using pthreads, but it
+    should be extensively tested. This version 0.18 is thus a little beta,
+    as those who will probe the code will notice.
+    - massive update of threads. The capture thread should be upgraded; it
+      will come with the next version.
+    
+    Sept 26, 2001, by Damien Douxchamps:
+    - corrected a bug concerning the camera select frame: table 9 was missing.
+    - cleaned the ISO button callbacks and added proper button activation.
+    - 'About' pixmap update, added a menu icon
+	
+    Sept 25, 2001, by Damien Douxchamps:
+    - I removed some unfinalized things that were not making Coriander look
+      professional
+    - removed the feature locking frame in commander window, as well as the
+      associated 'framework' code. It was let untouched for too long...
+    - same thing for the slave-camera locking feature (commander window)
+    - moved the ISO control into the space left by the feature locking int the
+      commander window. That should make setup easier by avoiding systematic
+      pop-up of the now-large capture window.
+	
+Changes in version 0.17:
+
+    Sept 24, 2001, by Damien Douxchamps:
+    - in an attempt to use radio buttons in the format selection menu, I
+      changed the format/mode menu building procedure. Some parts have been
+      left commented out, waiting for Glade to support menu-radio buttons
+      in a better way. Some definitions have been created in definitions.c.
+    - changed the compilation order in src/Makefile.am: definitions and tools
+      have been moved 'up'.
+    - removed the 'BuildFormat7Ranges' prompt to stdout.
+    - removed BuildFormat7Ranges.c file from CVS
+    - created UpdateFTPFrame in update_frame.c from Dan's code. Added label
+      shading to field shading in order to make things clearer. The function
+      has been added in the UpdateCaptureFrame window.
+    - some cosmetic UI changes in FTP frame
+    - updated version info to 0.17, README and AUTHORS
+	
+    Sept 18, 2001, by Dan Dennedy:
+    - interface.c: bugfix the porthole window not scaling smoothly by adding
+      a GtkAlignmentWidget
+    - interface.c: remove the incomplete accelerator for video overlay 
+      toggle button that was introduced yesterday.
+    - callbacks.c: removed the on_camera_scope_size_allocate and
+      on_camera_scape_size_request event handlers due to fix above.
+    - capture.c: bugfix some dc1394_setup_catpure calls using the wrong
+      handle introduced 2 days ago.
+
+    Sept 17, 2001, by Dan Dennedy:
+    - capture.c: optimize re-use of porthole buffer when capturing.
+    - capture.c: increased counter capacity to limit of unsigned long
+      and changed file format to include 10-digit number.
+    - capture.c: apply speed detection code to a few more calls to
+      dc1394_setup_capture.
+    - capture.c, ftp: do not issue chdir if path is empty string.
+    - tools.c: added MessageBox()
+    - callbacks.c: enabling FTP without FtpLib invokes MessageBox.
+    - added menu accelerators (see src/interface.mods)
+    - removed international support from build
+
+    Sept 16, 2001, by Dan Dennedy:
+    - capture.c: bugfix major memory leak in multi-capture
+    - capture.c: bugfix capture failing with video1394 loaded 
+      and porthole not open
+    - capture.c: factor out some code to a convert_to_yuv()
+      function to achieve symmetry with convert_to_rgb()
+    - added different capture frequencies: immediate (as fast
+      as possible) and periodic (every X secs)
+    - added different capture mode: sequentially nubmer file or
+      continually overwrite same file
+    - added ftp client option to capture based upon FtpLib, which
+      is detected with autoconf and handled appropriately.
+    - tools.c: added MainStatus()
+	
+Changes in version 0.17-pre1, July 25, 2001:
+
+    - true error handling: data not used when an error is detected.
+    - Bug fix: added "gdk_rgb_init();" in IsoStartThread() (capture.c)
+      Thanks to John B. Burchett and Dan Dennedy.
+    - due to the lack of updates I have removed the Japanese translation
+      files (besides, I've failed to integrate these for some time)
+    - Corrected some format7 code thanks to Olaf Ronneberger: in
+      BuildFormat7ColorMenu and GetFormat7Capabilities, index like
+      (0x1 << i) must be changed to (0x1 << (31-i)) (total: 2 occurences)
+	
+Changes in version 0.16, June 25, 2001:
+
+    - added first Status window implementation. Enabled status window
+      menu item in update_menus.c:line 42.
+    - removed 250 lines in callbacks.c by creating ChangeModeAndFormat
+      function in tools.c
+    - added a notice in the 'no camera found' warning window for those
+      who don't understand why their DV cameras are not detected (this
+      should people from sending stop tons of emails)
+    - moved iso_check/resume functions to tools.c
+    - added a checkbox in the test pattern menu item.
+    - repaired capture button enable when iso restart is clicked.
+    - added maximal speed detection for devices on the bus: no more
+      hard-typed SPEED_400!!!
+    - first implementation of the status bar of the main window. This bar
+      is currently only for error reporting.
+	
+Changes in version 0.15, May 23, 2001:
+
+    - added Dan's patch for capture & overlay
+    - added Marcus Lim code for test pattern display
+	
+Changes in version 0.14, May 16, 2001:
+
+    - fixes several bugs related to multi-camera support.
+    - removed cameras dc1394_init in main()
+    - added an overlay enable button for the used for whom the overlay
+      does not work well.
+	
+Changes in version 0.13, May 8, 2001:
+
+    - Heavy code cleanup & bug fixes for overlay and capture. Thanks Dan!
+    - some more bug fixes for multiple camera support. Note that overlay
+      does not work with multiple cameras.
+	
+Changes in version 0.12, April 25, 2001:
+
+    - added Japanese language support
+    - upgraded for compatibility with latest libdc1394
+    - added some more format6 and format7 preliminary stuff
+    - some more bug fixes
+	
+Changes in version 0.11, March 29, 2001:
+
+    - Code update from Dan Dennedy for video overlay: much better threads
+      handeling.
+    - First Format_6 window prototype
+    - single/multi frame capture added by Dan Dennedy
+          
+Changes in version 0.10, March 19, 2001:
+
+    - MASSIVE code update, cleanup and beautification. Functions of
+      different kinds are defined: update and build. These operate on
+      different objects: ranges, menus, frames and windows. This looks
+      more and more like C++... Build functions all end up by the
+      associated update function. Apart from that, build functions include
+      the building of their 'sons'.
+    - Addition of a video overlay in the porthole window. Many thanks to
+      Dan Dennedy!! :-)
+    - first implementation of Format_7 controls
+	
+Changes in version 0.09, Feb. 08, 2001:
+
+    - changed several functions prototype to ...(void) instead of ...().
+      This implied several changes to the callbacks.c file.
+    - added configure to the sources to try solving a compatibility
+      problem
+    - corrected a window-size problem (Format_7 window)
+	
+Changes in version 0.08, Jan. 13, 2001:
+
+    - iso flow control added in capture window: start/stop/restart
+    - changed layout of main window
+    - added the 'value' parameter for the external trigger ('count').
+      Trigger is now 99.9% completed (only testing remains)
+    - added a little logo on the main window
+    - replaced global feature & camera structures by global pointers to
+      these structures
+    - introduced the camera selector menu
+    - main.c now downloads data of all DC on the bus in a big structure.
+    - changed all 'vboxes' that contained dynamic menus to 'tables' because
+      it allows correct positioning of dynamicaly created widgets.
+    - introduced a new structure: dc1394_misc_info
+    - check that all 'set' commands also set the 3 global camera structures
+    - finished vectorization and multi-camera switching
+    - option menus are now coherent with the camera setup even at boot.
+    - framerate menu check that current framerate is available for 
+      format/mode. If not available, it switches to the nearest, preferably
+      lowest framerate available
+    - changed several constant index/boundaries and use instead DC1394
+      definitions (like NUM_FRAMERATES,...)
+	
+Changes in version 0.07, Jan. 08, 2001:
+
+    - intoduced Format_7 window
+    - fixed a bug in auto/man mode: each one issued a callback at
+      each state change so I removed the callbacks of AUTO mode and
+      generalized the MAN mode callback.
+    - iso flow is interrupted before fps/format/mode change and retored
+      after the change. This avoids hangups in other programs using the
+      iso flow.
+    - update ranges when exiting from auto mode (ONLY WORKING FOR WHITEBAL
+      when using DFW-VL500 bacause it seems this camera does not update all
+      its registers in auto mode !)
+    - removed disable of iris/gain/shutter during auto exposure (it was
+      meaningless)
+
+Changes in version 0.06, Jan. 04, 2001:
+
+    - corrected trigger features: now 99.9% operational
+    - corrected load/save memory feature: now 100% operational
+    - uses new functions of libdc1394 for trigger, memory and Format_7
+    - simplified fps menu generation & update
+    - changed some functions names (Build-)
+    - use of the dc1394_feature_set structure throughout the program
+      as an information repository (synch'd w/ camera)
+    - clearly dinstinguish ACTIVATE (at boot or camera select) and
+      UPDATE (changing values)
+    - DO NOT set any control in update functions (this yields a callback,
+      then an update, thus a callback,... == infinite loop!)
+    - auto exposure disables iris, gain and shutter
+    - callback functions data as pointers to avoid warnings
+
+Changes in version 0.05, Jan. 02, 2001:
+
+    - ( first official release )
+    - introduced the "Coriander" name (_that_ was a difficult change!)
+    - improved 0.02 in many ways
+    - temperature settings
+    - capture settings
+    - OP auto: momentary disable the command while working
+    - auto mode: disable range value (it should be updated regularly)
+    - dynamic option menus for fps and trigger mode
+    - new 'About' window (Gnome default look)
+
+Changes in version 0.02, Dec. 29, 2000:
+
+    - first signal connections for scale widgets
+	
+Changes in version 0.01, Dec. 27, 2000:
+
+    - first alpha version, still a lot of stuff missing...
