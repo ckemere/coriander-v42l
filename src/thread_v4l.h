@@ -20,6 +20,8 @@
 #ifndef __THREAD_V4L_H__
 #define __THREAD_V4L_H__
 
+#include <linux/videodev2.h>
+
 typedef struct
 {
   //long int                period;
@@ -30,9 +32,12 @@ typedef struct
   dc1394video_frame_t frame;
   //unsigned char *v4l_buffer;
 
-  struct video_capability vid_caps;
-  struct video_window vid_win;
-  struct video_picture vid_pic;
+  //struct video_capability vid_caps;
+  //struct video_window vid_win;
+  //struct video_picture vid_pic;
+
+  struct v4l2_capability vid_caps;
+  struct v4l2_format vid_format;
 
 } v4lthread_info_t;
 
