@@ -18,6 +18,7 @@
  */
 
 #include "coriander.h"
+#include <stdio.h>
 
 gint
 V4lStartThread(camera_t* cam)
@@ -108,7 +109,7 @@ V4lThread(void* arg)
   //struct video_picture p;
 
   struct v4l2_format pf;
-  
+
   v4l_service=(chain_t*)arg;
   pthread_mutex_lock(&v4l_service->mutex_data);
   info=(v4lthread_info_t*)v4l_service->data;
@@ -144,37 +145,38 @@ V4lThread(void* arg)
 	
 	/* IF we have mono data then set V4L for mono(grey) output */
 	/* Only do this ONCE before writing the first frame */
-
-	/*if (((v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_MONO8) ||
-	     (v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_RAW8)) && v4l_service->processed_frames==0) {
-	  Warning("Setting V4L device to GREY palette");
-	  if (ioctl(info->v4l_dev,VIDIOCGPICT,&p) < 0) 
-	    Error("ioctl(VIDIOCGPICT) error");
-	  else {
-	    p.palette = VIDEO_PALETTE_GREY;
-	    if (ioctl(info->v4l_dev,VIDIOCSPICT,&p) < 0) 
-	      Error("ioctl(VIDIOCSPICT) Error");
-	  }
-	}
-*/
 	if ((v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_MONO8) && v4l_service->processed_frames==0) {
 	  Warning("Setting V4L device to GREY pix_fmt");
-          //pf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+          pf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
 	  if (ioctl(info->v4l_dev,VIDIOC_G_FMT,&pf) < 0) 
 	    Error("ioctl(VIDIOC_G_FMT) error");
 	  else {
 	    pf.fmt.pix.pixelformat = V4L2_PIX_FMT_GREY;
+            pf.fmt.pix.sizeimage = v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1];
 	    if (ioctl(info->v4l_dev,VIDIOC_S_FMT,&pf) < 0) 
 	      Error("ioctl(VIDIOC_S_FMT) Error");
 	  }
 	}
 	else if ((v4l_service->current_buffer->frame.color_coding == DC1394_COLOR_CODING_RAW8) && v4l_service->processed_frames==0) {
 	  Warning("Setting V4L device to RGGB pix_fmt");
-          //pf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+          pf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
 	  if (ioctl(info->v4l_dev,VIDIOC_G_FMT,&pf) < 0) 
 	    Error("ioctl(VIDIOC_G_FMT) error");
 	  else {
 	    pf.fmt.pix.pixelformat = V4L2_PIX_FMT_SRGGB8;
+            pf.fmt.pix.sizeimage = v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1];
+	    if (ioctl(info->v4l_dev,VIDIOC_S_FMT,&pf) < 0) 
+	      Error("ioctl(VIDIOC_S_FMT) Error");
+	  }
+	}
+	else if (v4l_service->processed_frames==0) { // Default is RGB24
+	  Warning("Setting V4L device to RGB24 pix_fmt");
+          pf.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+	  if (ioctl(info->v4l_dev,VIDIOC_G_FMT,&pf) < 0) 
+	    Error("ioctl(VIDIOC_G_FMT) error");
+	  else {
+	    pf.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
+            pf.fmt.pix.sizeimage = v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3;
 	    if (ioctl(info->v4l_dev,VIDIOC_S_FMT,&pf) < 0) 
 	      Error("ioctl(VIDIOC_S_FMT) Error");
 	  }
@@ -184,7 +186,7 @@ V4lThread(void* arg)
 	if ((v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_MONO8) &&
 	    (v4l_service->current_buffer->frame.color_coding != DC1394_COLOR_CODING_RAW8)) {
 	  convert_to_rgb(&v4l_service->current_buffer->frame, &info->frame);
-	  swap_rb(info->frame.image, v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
+	  //swap_rb(info->frame.image, v4l_service->current_buffer->frame.size[0]*v4l_service->current_buffer->frame.size[1]*3);
 	}
 
 	if (v4l_service->current_buffer->frame.size[0]!=-1) {
@@ -296,38 +298,18 @@ V4lThreadCheckParams(chain_t *v4l_service)
     if (ioctl (info->v4l_dev, VIDIOC_QUERYCAP, &info->vid_caps) == -1) {
       perror ("ioctl (VIDIOC_QUERYCAP)");
     }
-    /* if (ioctl (info->v4l_dev, VIDIOCGCAP, &info->vid_caps) == -1) {
-      perror ("ioctl (VIDIOCGCAP)");
-    }
-*/
 
-    //info->vid_format.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+    info->vid_format.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
     if (ioctl (info->v4l_dev,VIDIOC_G_FMT,&info->vid_format) == -1) {
-      perror ("ioctl(VIDIOC_G_FMT) 2");
+      perror ("ioctl(VIDIOC_G_FMT)");
     }
     info->vid_format.type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
-    info->vid_format.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
+    info->vid_format.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24; // default-changes before data gets sent out
     info->vid_format.fmt.pix.width=v4l_service->current_buffer->frame.size[0];
     info->vid_format.fmt.pix.height=v4l_service->current_buffer->frame.size[1];
     if (ioctl (info->v4l_dev, VIDIOC_S_FMT, &info->vid_format)== -1) {
       perror ("ioctl VIDIOC_S_FMT");
     }
-/*    if (ioctl (info->v4l_dev, VIDIOCGPICT, &info->vid_pic)== -1) {
-      perror ("ioctl VIDIOCGPICT");
-    }
-    info->vid_pic.palette = VIDEO_PALETTE_RGB24;
-    if (ioctl (info->v4l_dev, VIDIOCSPICT, &info->vid_pic)== -1) {
-      perror ("ioctl VIDIOCSPICT");
-    }
-    if (ioctl (info->v4l_dev, VIDIOCGWIN, &info->vid_win)== -1) {
-      perror ("ioctl VIDIOCGWIN");
-    }
-    info->vid_win.width=v4l_service->current_buffer->frame.size[0];
-    info->vid_win.height=v4l_service->current_buffer->frame.size[1];
-    if (ioctl (info->v4l_dev, VIDIOCSWIN, &info->vid_win)== -1) {
-      perror ("ioctl VIDIOCSWIN");
-    }
-*/
   }
 
   // copy all new parameters:
