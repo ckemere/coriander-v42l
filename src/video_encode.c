@@ -26,7 +26,7 @@
 
 #ifdef HAVE_FFMPEG
 
-#define STREAM_FRAME_RATE 15 /* 15 images/s */
+#define STREAM_FRAME_RATE 30 /* 30 images/s */ // This should be extracted from camera setting
 
 //AVFrame *picture;
 uint8_t *video_outbuf;
@@ -65,49 +65,77 @@ void uyvy422_yuv422p(const unsigned char *frame, AVFrame *picture, const unsigne
   return;
 }
 
-/* add a video output stream */
-AVStream *add_video_stream(AVFormatContext *oc, int codec_id, int width, int height)
+void rgb8_rgb24(const unsigned char *frame, AVFrame *picture, const unsigned int width, const unsigned int height)
 {
+  const register unsigned char *src = frame;
+  register unsigned char *r = picture->data[0], 
+    *g = picture->data[1], 
+    *b = picture->data[2];
+  register unsigned int size = width*height;
+  while (size--) {
+    *r++ = *src++; // R
+    *g++ = *src++; // G
+    *b++ = *src++; // B
+  };
+  return;
+}
+
+
+/* add a video output stream */
+AVStream *add_video_stream(AVFormatContext *oc, enum CodecID codec_id, int width, int height)
+{
+  AVCodec *codec;
   AVCodecContext *c;
   AVStream *st;
+
+  codec = avcodec_find_encoder(codec_id);
+
+  if (!codec) {
+    fprintf(stderr, "Could not find encoder for '%d'.\n", codec_id);
+    exit(1);
+  }
   
-  st = av_new_stream(oc, 0);
+  st = avformat_new_stream(oc, codec);
   if (!st) {
     fprintf(stderr, "Could not alloc stream\n");
     exit(1);
   }
-  
+
   c = st->codec;
   c->codec_id = codec_id;
-  c->codec_type = CODEC_TYPE_VIDEO;
+  c->codec_type = AVMEDIA_TYPE_VIDEO;
   
   /* put sample parameters */
-  c->bit_rate = 4000000;
+  // Stuff to try to force high quality encoding
+  c->bit_rate = 6000000;
+  c->qmax = 2; // low is better, so frame-by-frame force high quality
+  /* just for testing, we also get rid of B frames */
+  if (c->codec_id == CODEC_ID_MPEG2VIDEO) {
+    c->max_b_frames = 0;
+  }
+
+  if (c->codec_id == CODEC_ID_THEORA) {
+    c->global_quality = 10000; // for libtheora
+    c->flags |= CODEC_FLAG_QSCALE;  // for libtheora
+  }
+
   /* resolution must be a multiple of two */
   c->width = width;  
   c->height = height;
-  c->pix_fmt = PIX_FMT_YUV420P;
-  //c->dct_algo = FF_DCT_AUTO;
-  //c->idct_algo = FF_IDCT_AUTO;
-  //c->me_method = ME_ZERO;
+  c->pix_fmt = PIX_FMT_YUV420P; 
+  //c->pix_fmt = PIX_FMT_YUVJ420P;  // only for LJPEG or MJPEG
   /* frames per second */
-  c->time_base.den = STREAM_FRAME_RATE;
-  c->time_base.num=1;
-  c->gop_size = 0; /* emit one intra frame every n frames at most */
-  /* just for testing, we also add B frames */
-  /*
-    if (c->codec_id == CODEC_ID_MPEG2VIDEO) {
-    c->max_b_frames = 2;
-    }
-  */
+  c->time_base = (AVRational){1,STREAM_FRAME_RATE};
+  //st->avg_frame_rate = c->time_base;
+  c->gop_size = 1; /* emit one intra frame every n frames at most */
   // some formats want stream headers to be seperate
-  if(!strcmp(oc->oformat->name, "mp4") || !strcmp(oc->oformat->name, "mov") || !strcmp(oc->oformat->name, "3gp"))
+  if (oc->oformat->flags & AVFMT_GLOBALHEADER)
     c->flags |= CODEC_FLAG_GLOBAL_HEADER;
-  
+
   return st;
 }
 
-AVFrame *alloc_picture(int pix_fmt, int width, int height) {
+AVFrame *alloc_pframe(int pix_fmt, int width, int height) {
     AVFrame *picture;
     uint8_t *picture_buf;
     int size;
@@ -116,10 +144,10 @@ AVFrame *alloc_picture(int pix_fmt, int width, int height) {
     if (!picture)
         return NULL;
     size = avpicture_get_size(pix_fmt, width, height);
-    picture_buf = malloc(size);
+    picture_buf = av_malloc(size);
     if (!picture_buf) {
         av_free(picture);
-	picture=NULL;
+        picture=NULL;
         return NULL;
     }
     avpicture_fill((AVPicture *)picture, picture_buf, 
@@ -130,6 +158,7 @@ AVFrame *alloc_picture(int pix_fmt, int width, int height) {
 int open_video(AVFormatContext *oc, AVStream *st) {
     AVCodec *codec;
     AVCodecContext *c;
+    int err;
 
     c = st->codec;
 
@@ -141,8 +170,9 @@ int open_video(AVFormatContext *oc, AVStream *st) {
     }
 
     /* open the codec */
-    if (avcodec_open(c, codec) < 0) {
-        fprintf(stderr, "could not open codec\n");
+    err = avcodec_open2(c, codec, NULL);
+    if (err < 0) {
+        fprintf(stderr, "could not open codec (err: %d)\n", err);
         return -1;
     }
 
@@ -150,71 +180,44 @@ int open_video(AVFormatContext *oc, AVStream *st) {
     if (!(oc->oformat->flags & AVFMT_RAWPICTURE)) {
         /* allocate output buffer */
         /* XXX: API change will be done */
-        video_outbuf_size = 200000;
+        video_outbuf_size = 1000000;
         video_outbuf = malloc(video_outbuf_size);
     }
 
-    /* allocate the encoded raw picture */
-    /*
-    picture = alloc_picture(c->pix_fmt, c->width, c->height);
-    if (!picture) {
-        fprintf(stderr, "Could not allocate picture\n");
-        exit(1);
-    }
-    */
 
-    /* if the output format is not YUV420P, then a temporary YUV420P
-       picture is needed too. It is then converted to the required
-       output format */
-    //tmp_picture = NULL;
-    //if (c->pix_fmt != PIX_FMT_YUV420P) {
-    /*
-    tmp_picture = alloc_picture(PIX_FMT_YUV422P, c->width, c->height);
-    if (!tmp_picture) {
-      fprintf(stderr, "Could not allocate temporary picture\n");
-      return;
-    }
-    */
-    //}
     return 1;
 }
 
 int write_video_frame(AVFormatContext *oc, AVStream *st, AVFrame *picture) {
     int out_size, ret;
     AVCodecContext *c;
-    AVPacket pkt;
-
-    av_init_packet(&pkt);
+    
     c = st->codec;
-
-    /*
-    uyvy422_yuv422p(frame, tmp_picture, c->width, c->height);
-    */
-
-    /*
-    avpicture_fill(tmp_picture, frame,
-                   PIX_FMT_YUV422, c->width, c->height);
-    */
-
-    //picture = NULL;
 
     /* encode the image */
     /* if zero size, it means the image was buffered */
     /* write the compressed frame in the media file */
     /* XXX: in case of B frames, the pts is not yet valid */
     out_size = avcodec_encode_video(c, video_outbuf, video_outbuf_size, picture);
-    if (out_size != 0) {
-      pkt.pts= c->coded_frame->pts;
-      if(c->coded_frame->key_frame)
-	pkt.flags |= PKT_FLAG_KEY;
-      pkt.stream_index= st->index;
-      pkt.data= video_outbuf;
-      pkt.size= out_size;
-      //ret = av_write_frame(oc, st->index, video_outbuf, out_size);
-      ret = av_write_frame(oc, &pkt);
+    if (out_size > 0) {
+        AVPacket pkt;
+        av_init_packet(&pkt);
+
+        if (c->coded_frame->pts != AV_NOPTS_VALUE)
+            pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
+        if(c->coded_frame->key_frame)
+            pkt.flags |= AV_PKT_FLAG_KEY;
+        pkt.stream_index= st->index;
+        pkt.data= video_outbuf;
+        pkt.size= out_size;
+
+        /* write the compressed frame in the media file */
+        //ret = av_interleaved_write_frame(oc, &pkt);
+        ret = av_write_frame(oc, &pkt);
     } else {
-      ret = 0;
+        ret = 0;
     }
+
     if (ret != 0) {
         fprintf(stderr, "Error while writing video frame\n");
         return -1;
@@ -223,18 +226,14 @@ int write_video_frame(AVFormatContext *oc, AVStream *st, AVFrame *picture) {
     return ret;
 }
 
-int close_video(AVFormatContext *oc, AVStream *st) {
+int close_video(AVFormatContext *oc, AVStream *st, AVFrame *picture) {
     avcodec_close(st->codec);
-    /*
     av_free(picture->data[0]);
     av_free(picture);
-    if (tmp_picture) {
-        av_free(tmp_picture->data[0]);
-        av_free(tmp_picture);
-    }
-    */
+
     av_free(video_outbuf);
     video_outbuf=NULL;
+
     return 1;
 }
 

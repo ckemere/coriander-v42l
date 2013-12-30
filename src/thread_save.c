@@ -60,11 +60,11 @@ SaveStartThread(camera_t* cam)
       info->bigbuffer_position=0;
       info->bigbuffer=(unsigned char*)malloc(cam->prefs.ram_buffer_size*1024*1024*sizeof(unsigned char));
       if (info->bigbuffer==NULL) {
-	Error("Could not allocate memory for RAM buffer save service");
-	pthread_mutex_unlock(&save_service->mutex_data);
-	FreeChain(save_service);
-	save_service=NULL;
-	return(-1);
+        Error("Could not allocate memory for RAM buffer save service");
+        pthread_mutex_unlock(&save_service->mutex_data);
+        FreeChain(save_service);
+        save_service=NULL;
+        return(-1);
       }
     }
 
@@ -80,8 +80,8 @@ SaveStartThread(camera_t* cam)
       pthread_mutex_unlock(&save_service->mutex_struct);
       pthread_mutex_unlock(&save_service->mutex_data);
       if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
-	free(info->frame.image);
-	info->frame.allocated_image_bytes=0;
+        free(info->frame.image);
+        info->frame.allocated_image_bytes=0;
       }
       FreeChain(save_service);
       save_service=NULL;
@@ -376,6 +376,7 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 #ifdef HAVE_FFMPEG
   info->fmt = NULL;
   info->oc = NULL;
+  info->codec = NULL;
   info->video_st = NULL;
   info->picture = NULL;
   info->tmp_picture = NULL;
@@ -397,16 +398,13 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
 #ifdef HAVE_FFMPEG
   if ((cam->prefs.save_format==SAVE_FORMAT_MPEG) && (cam->prefs.use_ram_buffer==FALSE)) {//-----------------------------------
     // MPEG
-    //fprintf(stderr,"setting up mpeg codec\n");
-    //video_encode_init(save_service->current_buffer->width,
-    //		      save_service->current_buffer->height, CODEC_ID_MPEG1VIDEO);
-
-    /* auto detect the output format from the name. default is mpeg. */
-    info->fmt = guess_format(NULL, filename_out, NULL);
+    /* auto detect the output format from the name. default is mp4/mpeg1. */
+    info->fmt = av_guess_format(NULL, filename_out, NULL);
     if (!info->fmt) {
-      fprintf(stderr,"Could not deduce output format from file extension: using MPEG.\n");
-      info->fmt = guess_format("mpeg", NULL, NULL);
+      fprintf(stderr,"Could not deduce output format from file extension: using MP4.\n");
+      info->fmt = av_guess_format("mp4", NULL, NULL);
     }
+    info->fmt->video_codec = CODEC_ID_MPEG2VIDEO; // force MPEG vidoe otherwise, default for mp4 is h264
     
     if (!info->fmt) {
       fprintf(stderr, "Could not find suitable output format\n");
@@ -414,19 +412,17 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     }
 
     /* allocate the output media context */
-    info->oc = av_alloc_format_context();
+    info->oc = avformat_alloc_context();
     if (!info->oc) {
       fprintf(stderr, "Memory error\n");
     }
     info->oc->oformat = info->fmt;
     snprintf(info->oc->filename, sizeof(info->oc->filename), "%s", filename_out);
     
-    /* add the audio and video streams using the default format codecs
-       and initialize the codecs */
+    /* add the video stream to the container and initialize the codecs */
     info->video_st = NULL;
     if (info->fmt->video_codec != CODEC_ID_NONE) {
-      //video_st = add_video_stream(oc, fmt->video_codec);
-      info->video_st = add_video_stream(info->oc, CODEC_ID_MJPEG, 
+      info->video_st = add_video_stream(info->oc, info->fmt->video_codec, 
 					save_service->current_buffer->frame.size[0],
 					save_service->current_buffer->frame.size[1]);
     }
@@ -437,62 +433,38 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
       fprintf(stderr, "Invalid output format parameters\n");
     }
     
-    dump_format(info->oc, 0, filename_out, 1);
+    av_dump_format(info->oc, 0, filename_out, 1);
     
     /* now that all the parameters are set, we can open the
        video codec and allocate the necessary encode buffers */
-    
     if (info->video_st)
       open_video(info->oc, info->video_st);
+
+    info->picture = alloc_pframe(info->video_st->codec->pix_fmt, 
+        info->video_st->codec->width, info->video_st->codec->height);
+
+    if (info->picture == NULL)
+      fprintf(stderr, "Could not allocate picture memory\n");
     
     /* open the output file, if needed */
     if (!(info->fmt->flags & AVFMT_NOFILE)) {
       ProtectFilename(filename_out);
       if (url_fopen(&info->oc->pb, filename_out, URL_WRONLY) < 0) {
-	fprintf(stderr, "Could not open '%s'\n", filename_out);
+        fprintf(stderr, "Could not open '%s'\n", filename_out);
       }
     }
   
     /* write the stream header, if any */
-    av_write_header(info->oc); 
-    
-    info->picture = alloc_picture(info->video_st->codec->pix_fmt, info->video_st->codec->width, info->video_st->codec->height);
-    if (!info->picture) {
-      fprintf(stderr, "Could not allocate picture\n");
-    }
-    
-    info->mpeg_color_mode=0;
-    switch (save_service->current_buffer->frame.color_coding) {
-    case DC1394_COLOR_CODING_MONO8:
-    case DC1394_COLOR_CODING_RAW8:
-      info->mpeg_color_mode=PIX_FMT_GRAY8;
-      break;
-    case DC1394_COLOR_CODING_YUV411:
-      info->mpeg_color_mode=PIX_FMT_YUV411P;
-      break;
-    case DC1394_COLOR_CODING_YUV422:
-      info->mpeg_color_mode=PIX_FMT_YUV422P;
-      break;
-    case DC1394_COLOR_CODING_YUV444:
-      info->mpeg_color_mode=PIX_FMT_YUV444P;
-      break;
-    case DC1394_COLOR_CODING_RGB8:
-      info->mpeg_color_mode=PIX_FMT_RGB24;
-      break;
-    default:
-      fprintf(stderr, "This format is not supported for MPEG save\n");
-      break;
-    }
-
-    info->tmp_picture = alloc_picture(info->mpeg_color_mode, info->video_st->codec->width, info->video_st->codec->height);
-    if (!info->tmp_picture) {
-      fprintf(stderr, "Could not allocate temporary picture\n");
-    }
+    avformat_write_header(info->oc, NULL); 
     
     strcpy(info->subtitle, filename_out);
     strcpy(strrchr(info->subtitle,'.'), ".sub");
     fprintf(stderr, "Recording frame timestamps to: %s\n", info->subtitle);
     info->fdts = open(info->subtitle, O_CREAT | O_WRONLY | O_SYNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+
+
+    subtitle_header(info->subtitle);
+    write(info->fdts, info->subtitle, strlen(info->subtitle));
 
   }
 #endif    // END MPEG
@@ -589,27 +561,90 @@ SaveMPEGFrame(chain_t *save_service)
 {
   savethread_info_t *info;
   //unsigned char *tmp_buf;
-  unsigned int pix_fmt;
   int err=0;
+  static int sws_flags = SWS_FAST_BILINEAR | SWS_CPU_CAPS_MMX2;
+  // static int sws_flags = SWS_BICUBIC;
+  static struct SwsContext *sws_ctx;
+  int linesize[4];
   info=(savethread_info_t*)save_service->data;
 
+  int i;
 
-  switch(save_service->current_buffer->frame.color_coding) {
+  AVCodecContext *c = info->video_st->codec;
+  static dc1394color_coding_t color_coding = DC1394_COLOR_CODING_MONO8; // initial
+
+  AVPicture *tmp_picture;
+
+  if ((!sws_ctx) || (save_service->current_buffer->frame.color_coding != color_coding)) {
+    fprintf(stderr, "Setting color coding\n");
+    color_coding = save_service->current_buffer->frame.color_coding;
+    info->mpeg_color_mode=0;
+    switch(color_coding) {
+    case DC1394_COLOR_CODING_MONO8:
+    case DC1394_COLOR_CODING_RAW8:
+      info->mpeg_color_mode=PIX_FMT_GRAY8;
+      fprintf(stderr, "This format is not supported for MPEG save\n");
+      err=1;
+      break;
+    case DC1394_COLOR_CODING_YUV411:
+      info->mpeg_color_mode=PIX_FMT_UYYVYY411;
+      //info->mpeg_color_mode=PIX_FMT_YUV411P;
+      break;
+    case DC1394_COLOR_CODING_YUV422:
+      info->mpeg_color_mode=PIX_FMT_UYVY422;
+      //info->mpeg_color_mode=PIX_FMT_YUV422P;
+      break;
+    case DC1394_COLOR_CODING_YUV444:
+      info->mpeg_color_mode=PIX_FMT_YUV444P;
+      fprintf(stderr, "This format is not supported for MPEG save\n");
+      err=1;
+      break;
+    case DC1394_COLOR_CODING_RGB8:
+      info->mpeg_color_mode=PIX_FMT_RGB24;
+      break;
+    default:
+      fprintf(stderr, "This format is not supported for MPEG save\n");
+      err=1;
+      break;
+    }
+
+    if (info->tmp_picture != NULL) {
+      av_free(info->tmp_picture);
+      info->tmp_picture=NULL;
+    }
+    info->tmp_picture = avcodec_alloc_frame();
+    sws_ctx = sws_getContext(c->width, c->height, info->mpeg_color_mode,
+                           c->width, c->height, c->pix_fmt,
+                           sws_flags, NULL, NULL, NULL);
+  }
+
+  switch(color_coding) {
   case DC1394_COLOR_CODING_YUV411:
-    uyvy411_yuv411p(save_service->current_buffer->frame.image, info->tmp_picture, 
-		    save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
-		(AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
-		save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    pix_fmt=PIX_FMT_YUVJ420P;
+    // uyvy411_yuv411p(save_service->current_buffer->frame.image, info->tmp_picture, 
+		    // save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
+    avpicture_fill(info->tmp_picture, save_service->current_buffer->frame.image,
+        PIX_FMT_UYYVYY411, c->width, c->height);
+    sws_scale(sws_ctx,
+        (const uint8_t * const *)info->tmp_picture->data, info->tmp_picture->linesize,
+        0, c->height, info->picture->data, info->picture->linesize);
     break;
   case DC1394_COLOR_CODING_YUV422:
-    uyvy422_yuv422p(save_service->current_buffer->frame.image, info->tmp_picture, 
-		    save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
-		(AVPicture *)info->tmp_picture, PIX_FMT_YUV422P,
-		save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    pix_fmt=PIX_FMT_YUVJ420P;
+    // uyvy422_yuv422p(save_service->current_buffer->frame.image, info->tmp_picture, 
+		    // save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
+    avpicture_fill(info->tmp_picture, save_service->current_buffer->frame.image,
+        PIX_FMT_UYVY422, c->width, c->height);
+    sws_scale(sws_ctx,
+        (const uint8_t * const *)info->tmp_picture->data, info->tmp_picture->linesize,
+        0, c->height, info->picture->data, info->picture->linesize);
+    break;
+  case DC1394_COLOR_CODING_RGB8:
+    avpicture_fill(info->tmp_picture, save_service->current_buffer->frame.image,
+        PIX_FMT_RGB24, c->width, c->height);
+    sws_scale(sws_ctx,
+        info->tmp_picture->data, info->tmp_picture->linesize,
+        0, c->height, info->picture->data, info->picture->linesize);
+        // save_service->current_buffer->frame.image, info->tmp_picture->linesize,
+        // 0, c->height, info->picture->data, info->picture->linesize);
     break;
   default:
     fprintf(stderr,"unsupported color format!!\n");
@@ -621,10 +656,12 @@ SaveMPEGFrame(chain_t *save_service)
     write_video_frame(info->oc, info->video_st, info->picture);
     
     /* Save time stamp */
-    new_subtitle(save_service->processed_frames, save_service->fps,
-		 save_service->current_buffer->captime_string, info->subtitle);
+    write(info->fdts, &(save_service->current_buffer->frame_sec), sizeof(uint64_t));
+    write(info->fdts, &(save_service->current_buffer->frame_nsec), sizeof(uint64_t));
+    //new_subtitle(save_service->processed_frames, save_service->fps,
+		 //save_service->current_buffer->captime_string, info->subtitle);
     //printf("%s", info->subtitle);
-    write(info->fdts, info->subtitle, strlen(info->subtitle));
+    //write(info->fdts, info->subtitle, strlen(info->subtitle));
   }
 }
 
@@ -632,49 +669,103 @@ void
 SaveJPEGFrame(chain_t *save_service, char *filename_out)
 {
   savethread_info_t *info;
-  //unsigned char *tmp_buf;
-  //unsigned int pix_fmt;
-  //int err=0;
+  static dc1394color_coding_t color_coding = DC1394_COLOR_CODING_MONO8; // initial
   info=(savethread_info_t*)save_service->data;
-  //if (save_service->current_buffer->frame.color_coding!=DC1394_COLOR_CODING_YUV411)&&(
 
-  fprintf(stderr,"Trying to save a JPEG frame...\n");
-  
-  info->picture = alloc_picture(PIX_FMT_YUVJ420P, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-  if (!info->picture) {
+  static int sws_flags = SWS_BICUBIC;
+  static struct SwsContext *sws_ctx;
+  info=(savethread_info_t*)save_service->data;
+
+  int width = save_service->current_buffer->frame.size[0];
+  int height = save_service->current_buffer->frame.size[1];
+
+  AVPicture tmp_picture;
+
+  info->picture = alloc_pframe(PIX_FMT_YUVJ420P, width, height);
+  if (info->picture == NULL) {
     fprintf(stderr, "Could not allocate picture\n");
   }
-  switch(save_service->current_buffer->frame.color_coding) {
+
+  if ((!sws_ctx) || (save_service->current_buffer->frame.color_coding != color_coding)) {
+    color_coding = save_service->current_buffer->frame.color_coding;
+    info->mpeg_color_mode=0;
+    switch(color_coding) {
+    case DC1394_COLOR_CODING_MONO8:
+    case DC1394_COLOR_CODING_RAW8:
+      info->mpeg_color_mode=PIX_FMT_GRAY8;
+      fprintf(stderr, "This format is not supported for MPEG save\n");
+      break;
+    case DC1394_COLOR_CODING_YUV411:
+      info->mpeg_color_mode=PIX_FMT_UYYVYY411;
+      //info->mpeg_color_mode=PIX_FMT_YUV411P;
+      break;
+    case DC1394_COLOR_CODING_YUV422:
+      info->mpeg_color_mode=PIX_FMT_UYVY422;
+      //info->mpeg_color_mode=PIX_FMT_YUV422P;
+      break;
+    case DC1394_COLOR_CODING_YUV444:
+      info->mpeg_color_mode=PIX_FMT_YUV444P;
+      fprintf(stderr, "This format is not supported for MPEG save\n");
+      break;
+    case DC1394_COLOR_CODING_RGB8:
+      info->mpeg_color_mode=PIX_FMT_RGB24;
+      break;
+    default:
+      fprintf(stderr, "This format is not supported for MPEG save\n");
+      break;
+    }
+    fprintf(stderr, "Set colorformat to %d\n",info->mpeg_color_mode);
+
+    if (info->tmp_picture != NULL) {
+      av_free(info->tmp_picture);
+      info->tmp_picture=NULL;
+    }
+    info->tmp_picture = avcodec_alloc_frame();
+    sws_ctx = sws_getContext(width, height, info->mpeg_color_mode,
+                           width, height, PIX_FMT_YUVJ420P,
+                           sws_flags, NULL, NULL, NULL);
+  }
+
+  switch(color_coding) {
   case DC1394_COLOR_CODING_YUV411:
-    info->tmp_picture = alloc_picture(PIX_FMT_YUV411P, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    uyvy411_yuv411p(save_service->current_buffer->frame.image, info->tmp_picture, 
-		    save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    img_convert((AVPicture *)info->picture, PIX_FMT_YUVJ420P, 
-		(AVPicture *)info->tmp_picture, PIX_FMT_YUV411P,
-		save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    jpeg_write(info->picture, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1],
-	       PIX_FMT_YUVJ420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
-    
+    avpicture_fill(info->tmp_picture, save_service->current_buffer->frame.image,
+        PIX_FMT_UYYVYY411, width, height);
+    sws_scale(sws_ctx,
+        (const uint8_t * const *)info->tmp_picture->data, info->tmp_picture->linesize,
+        0, height, info->picture->data, info->picture->linesize);
+    jpeg_write(info->picture, width, height,
+	       PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
     break;
-  case DC1394_COLOR_CODING_YUV422: 
-    info->tmp_picture = alloc_picture(PIX_FMT_YUV422P, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    uyvy422_yuv422p(save_service->current_buffer->frame.image, info->tmp_picture, 
-		    save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1]);
-    jpeg_write(info->picture, save_service->current_buffer->frame.size[0], save_service->current_buffer->frame.size[1],
-	       PIX_FMT_YUVJ420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
+  case DC1394_COLOR_CODING_YUV422:
+    avpicture_fill(info->tmp_picture, save_service->current_buffer->frame.image,
+        PIX_FMT_UYVY422, width, height);
+    sws_scale(sws_ctx,
+        (const uint8_t * const *)info->tmp_picture->data, info->tmp_picture->linesize,
+        0, height, info->picture->data, info->picture->linesize);
+    jpeg_write(info->picture, width, height,
+	       PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
+    break;
+  case DC1394_COLOR_CODING_RGB8:
+    avpicture_fill(info->tmp_picture, save_service->current_buffer->frame.image,
+        PIX_FMT_RGB24, width, height);
+    sws_scale(sws_ctx,
+        info->tmp_picture->data, info->tmp_picture->linesize,
+        0, height, info->picture->data, info->picture->linesize);
+    jpeg_write(info->picture, width, height,
+	       PIX_FMT_YUV420P, filename_out, 90.0, "Created using Coriander and FFMPEG");
     break;
   default:
-    fprintf(stderr,"unsupported format: jpeg only works with YUV411 and YUV422 at this time!\n");
+    fprintf(stderr,"unsupported format: jpeg only works with RGB24, YUV411, YUV422 at this time!\n");
     break;
   }
-  
+
+
   if (info->picture) {
     av_free(info->picture->data[0]);
     av_free(info->picture);
     info->picture=NULL;
   }
   if (info->tmp_picture) {
-    av_free(info->tmp_picture->data[0]);
     av_free(info->tmp_picture);
     info->tmp_picture=NULL;
   }
@@ -729,128 +820,128 @@ SaveThread(void* arg)
 
       //fprintf(stderr,"About to roll buffers in SAVE thread\n");
       if(GetBufferFromPrevious(save_service)) { // have buffers been rolled?
-	// check params
-	//printf("New frame arrived\n");
-	SaveThreadCheckParams(save_service);
-	if (save_service->current_buffer->frame.size[0]!=-1) {
-	  if (skip_counter>=(cam->prefs.save_period-1)) {
-	    skip_counter=0;
+        // check params
+        //printf("New frame arrived\n");
+        SaveThreadCheckParams(save_service);
+        if (save_service->current_buffer->frame.size[0]!=-1) {
+          if (skip_counter>=(cam->prefs.save_period-1)) {
+            skip_counter=0;
 
-	    // get file descriptor
-	    if (GetSaveFD(save_service, &fd, filename_out)!=DC1394_SUCCESS)
-	      break;
+            // get file descriptor
+            if (GetSaveFD(save_service, &fd, filename_out)!=DC1394_SUCCESS)
+              break;
 
 #ifdef HAVE_FFMPEG
-	    if ((save_service->processed_frames==0)&&
-		((cam->prefs.save_format==SAVE_FORMAT_MPEG)||
-		 (cam->prefs.save_format==SAVE_FORMAT_JPEG))) {
-	      av_register_all();
-	    }
+            if ((save_service->processed_frames==0)&&
+          ((cam->prefs.save_format==SAVE_FORMAT_MPEG)||
+           (cam->prefs.save_format==SAVE_FORMAT_JPEG))) {
+              av_register_all();
+            }
 #endif
 
-	    // write initial data for video (header,...)
-	    if ((save_service->processed_frames==0)&&
-		((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
+            // write initial data for video (header,...)
+            if ((save_service->processed_frames==0)&&
+          ((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
 #ifdef HAVE_FFMPEG
-		 (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
+           (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
 #endif
-		 (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
-	      if (InitVideoFile(save_service, fd, filename_out)!=DC1394_SUCCESS) {
-		break;
-	      }
-	    }
+           (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
+              if (InitVideoFile(save_service, fd, filename_out)!=DC1394_SUCCESS) {
+          break;
+              }
+            }
 
-	    // rambuffer operation
-	    if ((cam->prefs.use_ram_buffer==TRUE)&&
-		((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
+            // rambuffer operation
+            if ((cam->prefs.use_ram_buffer==TRUE)&&
+          ((cam->prefs.save_format==SAVE_FORMAT_RAW_VIDEO)||
 #ifdef HAVE_FFMPEG
-		 (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
+           (cam->prefs.save_format==SAVE_FORMAT_MPEG)||
 #endif
-		 (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
-	      FillRamBuffer(save_service);
-	    }
-	    else { // normal operation (no RAM buffer)
-	      switch (cam->prefs.save_format) {
-	      case SAVE_FORMAT_RAW:
-		//fprintf(stderr,"writing raw...");
-		fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
-		//fprintf(stderr,"done. closing fd...");
-		fclose(fd);
-		fd=NULL;
-		//fprintf(stderr,"done\n");
-		break;
-	      case SAVE_FORMAT_RAW_VIDEO:
-		fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
-		break;
-	      case SAVE_FORMAT_PVN:
-		if (needsConversionForPVN(save_service->current_buffer->frame.color_coding)>0) {
-		  // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
-		  tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*sizeof(unsigned char));
-		  convert_for_pvn(save_service->current_buffer->frame.image, save_service->current_buffer->frame.size[0],
-				  save_service->current_buffer->frame.size[1], 0, save_service->current_buffer->frame.color_coding, tmp_buf);
-		  fwrite(tmp_buf, 3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1], 1, fd);
-		  free(tmp_buf);
-		  tmp_buf=NULL;
-		}
-		else {
-		  // no conversion, we can dump the data
-		  fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
-		}
-		break;
+           (cam->prefs.save_format==SAVE_FORMAT_PVN))) {
+              FillRamBuffer(save_service);
+            }
+            else { // normal operation (no RAM buffer)
+              switch (cam->prefs.save_format) {
+              case SAVE_FORMAT_RAW:
+                //fprintf(stderr,"writing raw...");
+                fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
+                //fprintf(stderr,"done. closing fd...");
+                fclose(fd);
+                fd=NULL;
+                //fprintf(stderr,"done\n");
+                break;
+              case SAVE_FORMAT_RAW_VIDEO:
+                fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
+                break;
+              case SAVE_FORMAT_PVN:
+                if (needsConversionForPVN(save_service->current_buffer->frame.color_coding)>0) {
+                  // we assume that if it needs conversion, the output of the conversion is an 8bpp RGB
+                  tmp_buf = (unsigned char*)malloc(3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1]*sizeof(unsigned char));
+                  convert_for_pvn(save_service->current_buffer->frame.image, save_service->current_buffer->frame.size[0],
+                      save_service->current_buffer->frame.size[1], 0, save_service->current_buffer->frame.color_coding, tmp_buf);
+                  fwrite(tmp_buf, 3*save_service->current_buffer->frame.size[0]*save_service->current_buffer->frame.size[1], 1, fd);
+                  free(tmp_buf);
+                  tmp_buf=NULL;
+                }
+                else {
+                  // no conversion, we can dump the data
+                  fwrite(save_service->current_buffer->frame.image, save_service->current_buffer->frame.image_bytes, 1, fd);
+                }
+                break;
 #ifdef HAVE_FFMPEG
-	      case SAVE_FORMAT_MPEG:
-		// video saving mode
-		//fprintf(stderr,"entering MPEG save and convert section\n");
-		SaveMPEGFrame(save_service);
-		break;
-	      case SAVE_FORMAT_JPEG:
-		/* Save JPEG file using FFMPEG... Much, much faster... There is no need for YUV->RGB color space conversions */
-		SaveJPEGFrame(save_service, filename_out);
-		break;
+              case SAVE_FORMAT_MPEG:
+                // video saving mode
+                // fprintf(stderr,"entering MPEG save and convert section\n");
+                SaveMPEGFrame(save_service);
+                break;
+                    case SAVE_FORMAT_JPEG:
+                /* Save JPEG file using FFMPEG... Much, much faster... There is no need for YUV->RGB color space conversions */
+                SaveJPEGFrame(save_service, filename_out);
+                break;
 #endif
-	      case SAVE_FORMAT_PPM:
-		SavePPM(save_service,fd);
-		fclose(fd);
-		fd=NULL;
-		break;
-	      default:
-		fprintf(stderr,"Unsupported file format\n");
-	      } // end save format switch
-	    } // end ram buffer if
-	    save_service->processed_frames++;
-	  }
-	  else
-	    skip_counter++;
-	  
-	  // FPS computation:
-	  tmp=((float)(save_service->current_buffer->frame.timestamp-save_service->prev_time))/1000000.0;
-	  if (save_service->prev_time==0) {
-	    save_service->fps=fabs(0.0);
-	  }
-	  else {
-	    if (tmp==0)
-	      save_service->fps=fabs(0.0);
-	    else
-	      save_service->fps=fabs(1/tmp);
-	  }
-	  if (save_service->prev_time!=0) {
-	    save_service->prev_period=tmp;
-	  }
-	  // produce a drop warning if the period difference is over 50%
-	  if (save_service->prev_period!=0) {
-	    if (fabs(save_service->prev_period-tmp)/(save_service->prev_period/2+tmp/2)>=.5)
-	      save_service->drop_warning++;
-	  }
-	  save_service->prev_time=save_service->current_buffer->frame.timestamp;
-	}
-	//usleep(200000);////////////////////////////////////////////
-	PublishBufferForNext(save_service);
-	pthread_mutex_unlock(&save_service->mutex_data);
-	//fprintf(stderr,"saved frame %.7f\n",save_service->fps);
+              case SAVE_FORMAT_PPM:
+                SavePPM(save_service,fd);
+                fclose(fd);
+                fd=NULL;
+                break;
+              default:
+                fprintf(stderr,"Unsupported file format\n");
+              } // end save format switch
+            } // end ram buffer if
+            save_service->processed_frames++;
+          }
+          else
+            skip_counter++;
+          
+          // FPS computation:
+          tmp=((float)(save_service->current_buffer->frame.timestamp-save_service->prev_time))/1000000.0;
+          if (save_service->prev_time==0) {
+            save_service->fps=fabs(0.0);
+          }
+          else {
+            if (tmp==0)
+              save_service->fps=fabs(0.0);
+            else
+              save_service->fps=fabs(1/tmp);
+          }
+          if (save_service->prev_time!=0) {
+            save_service->prev_period=tmp;
+          }
+          // produce a drop warning if the period difference is over 50%
+          if (save_service->prev_period!=0) {
+            if (fabs(save_service->prev_period-tmp)/(save_service->prev_period/2+tmp/2)>=.5)
+              save_service->drop_warning++;
+          }
+          save_service->prev_time=save_service->current_buffer->frame.timestamp;
+        }
+        //usleep(200000);////////////////////////////////////////////
+        PublishBufferForNext(save_service);
+        pthread_mutex_unlock(&save_service->mutex_data);
+        //fprintf(stderr,"saved frame %.7f\n",save_service->fps);
       }
       else {
-	//fprintf(stderr,"No new frame, unlocking mutex\n");
-	pthread_mutex_unlock(&save_service->mutex_data);
+        //fprintf(stderr,"No new frame, unlocking mutex\n");
+        pthread_mutex_unlock(&save_service->mutex_data);
       }
       //fprintf(stderr,"??");
     }
@@ -910,42 +1001,32 @@ SaveThread(void* arg)
     fclose(fd);
     fd=NULL;
   }
-  //fprintf(stderr,"FFMPEG crap\n");
 #ifdef HAVE_FFMPEG
   if (cam->prefs.save_format==SAVE_FORMAT_MPEG) {
-    av_free(info->picture->data[0]);
-    av_free(info->picture);
-    info->picture=NULL;
-    
-    av_free(info->tmp_picture->data[0]);
-    av_free(info->tmp_picture);
-    info->tmp_picture=NULL;
-
     //video_encode_finish();
-    /* close each codec */
-    if (info->video_st)
-      close_video(info->oc, info->video_st);
     /* write the trailer, if any */
     av_write_trailer(info->oc);
-    /* free the streams */
-    for(i = 0; i < info->oc->nb_streams; i++) {
-      av_freep(&info->oc->streams[i]);
+
+    /* close each codec */
+    if (info->video_st)
+      close_video(info->oc, info->video_st, info->picture);
+    if (info->tmp_picture) {
+      av_free(info->tmp_picture);
+      info->tmp_picture=NULL;
     }
+
     if (!(info->fmt->flags & AVFMT_NOFILE)) {
       /* close the output file */
-      url_fclose(&info->oc->pb);
+      url_fclose(info->oc->pb);
     }
-    /* free the stream */
-    av_free(info->oc);
+    /* free the stream and context */
+    avformat_free_context(info->oc);
     info->oc=NULL;
-  
+
     close(info->fdts);
-    
-    fprintf(stderr, "Video encode: Finnished and closed video file...\n");
+
   }
 #endif
-
-  //fprintf(stderr,"other crap\n");
 
   if (info->bigbuffer!=NULL) {
     free(info->bigbuffer);
@@ -957,7 +1038,6 @@ SaveThread(void* arg)
   free(filename_out);
   filename_out=NULL;
 
-  //fprintf(stderr,"leaving\n");
   return ((void*)1);
 }
 
@@ -972,10 +1052,8 @@ SaveStopThread(camera_t* cam)
   if (save_service!=NULL) { // if SAVE service running...
     info=(savethread_info_t*)save_service->data;
     /* Clean cancel handler: */
-    //fprintf(stderr,"setting cancel request...");
     pthread_mutex_lock(&info->mutex_cancel);
     info->cancel_req=1;
-    //fprintf(stderr,"done\n");
     pthread_mutex_unlock(&info->mutex_cancel);
     
     /* common handlers...*/
@@ -984,16 +1062,12 @@ SaveStopThread(camera_t* cam)
     pthread_mutex_lock(&save_service->mutex_data);
     pthread_mutex_lock(&save_service->mutex_struct);
     
-    //fprintf(stderr,"removing chain...");
     RemoveChain(cam,save_service);
-    //fprintf(stderr,"done\n");
-    //fprintf(stderr,"free...");
     /* Do custom cleanups here...*/
     if ((info->frame.image!=NULL)&&(info->frame.allocated_image_bytes>0)) {
       free(info->frame.image);
       info->frame.allocated_image_bytes=0;
     }
-    //fprintf(stderr,"done\n");
     
     /* Mendatory cleanups: */
     pthread_mutex_unlock(&save_service->mutex_struct);

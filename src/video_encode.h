@@ -4,11 +4,11 @@
 #ifdef HAVE_FFMPEG
 
 /* Video encode */
-AVStream *add_video_stream(AVFormatContext *oc, int codec_id, int width, int height);
-AVFrame *alloc_picture(int pix_fmt, int width, int height);
+AVStream *add_video_stream(AVFormatContext *oc, enum CodecID codec_id, int width, int height);
+AVFrame *alloc_pframe(int pix_fmt, int width, int height);
 int open_video(AVFormatContext *oc, AVStream *st);
-int write_video_frame(AVFormatContext *oc, AVStream *st, AVFrame *tmp_picture);
-int close_video(AVFormatContext *oc, AVStream *st);
+int write_video_frame(AVFormatContext *oc, AVStream *st, AVFrame *picture);
+int close_video(AVFormatContext *oc, AVStream *st, AVFrame *picture);
 
 /* Single image encode */
 int ImageToFile_JPEG(unsigned char *image_buffer, 
@@ -21,6 +21,7 @@ int jpeg_write(AVFrame *jpeg_picture, unsigned int width, unsigned int height, i
 
 void uyvy411_yuv411p(const unsigned char *frame, AVFrame *picture, const unsigned int width, const unsigned int height);
 void uyvy422_yuv422p(const unsigned char *frame, AVFrame *picture, const unsigned int width, const unsigned int height);
+void rbg8_rgb24(const unsigned char *frame, AVFrame *picture, const unsigned int width, const unsigned int height);
 
 #endif
 

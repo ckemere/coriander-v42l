@@ -187,7 +187,10 @@ typedef struct _Buffer_T
   dc1394stereo_method_t stereo_method;
   dc1394bayer_method_t  bayer_method;
 
-  char captime_string[19];
+  char captime_string[20];
+  uint64_t frame_sec;
+  uint64_t frame_nsec;
+
 
   //int used; // set to 1 if the buffer has already been used by a service. Only the last thread can do
             // this change. The ISO thread can be set to take that flag into account or not. EFFECT:

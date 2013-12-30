@@ -50,6 +50,7 @@ gint IsoStartThread(camera_t* cam)
     
     /* currently FORMAT_STILL_IMAGE is not supported*/
     if (dc1394_is_video_mode_still_image(video_mode)==DC1394_TRUE) {
+      fprintf(stderr, "Still image not supported by ISO service\n");
       FreeChain(iso_service);
       iso_service=NULL;
       return(-1);
@@ -181,6 +182,7 @@ IsoThread(void* arg)
   struct tm captime;
   dc1394error_t err;
   struct timeval rawtime;
+  struct timespec rawtime_hres;
 
   iso_service=(chain_t*)arg;
 
@@ -223,10 +225,15 @@ IsoThread(void* arg)
 
 	if ((err==DC1394_SUCCESS)&&(frame!=NULL)) { // should check for more errors here  
 	  //fprintf(stderr,"size: %d %d\n",frame->size[0],frame->size[1]);
+    if (frame->frames_behind > 7)
+      fprintf(stderr, "Frames behind %d\n", frame->frames_behind);
 	
 	  rawtime.tv_sec=frame->timestamp/1000000;
 	  rawtime.tv_usec=frame->timestamp%1000000;
+    // HACK to force system time instead of driver time
+    //gettimeofday(&rawtime, NULL);
 	  localtime_r(&rawtime.tv_sec, &captime);
+	  //fprintf(stderr,"%04d%02d%02d-%02d%02d%02d-%03d",
 	  sprintf(iso_service->current_buffer->captime_string,"%04d%02d%02d-%02d%02d%02d-%03d",
 		  captime.tm_year+1900,
 		  captime.tm_mon+1,
@@ -235,6 +242,10 @@ IsoThread(void* arg)
 		  captime.tm_min,
 		  captime.tm_sec,
 		  (int)rawtime.tv_usec/1000);
+
+    clock_gettime(CLOCK_MONOTONIC_COARSE, &rawtime_hres);
+    iso_service->current_buffer->frame_sec = rawtime_hres.tv_sec;
+    iso_service->current_buffer->frame_nsec = rawtime_hres.tv_nsec;
 	  
 	  // check current buffer status
 	  // IsoThreadCheckParams(iso_service); // THIS IS AUTOMATIC NOW!!

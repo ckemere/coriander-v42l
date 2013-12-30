@@ -1657,7 +1657,8 @@ on_save_format_menu_activate             (GtkEditable     *editable,
       break;
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_MPEG:
-      sprintf(camera->prefs.save_filename_ext,"mpeg");
+      sprintf(camera->prefs.save_filename_ext,"mp4");
+      //sprintf(camera->prefs.save_filename_ext,"mpeg");
       break;
 #endif
   default:

@@ -64,6 +64,7 @@ typedef struct
   //MPEG encoding data
   AVOutputFormat *fmt;
   AVFormatContext *oc;
+  AVCodec *codec;
   AVStream *video_st;
   AVFrame *picture;
   AVFrame *tmp_picture;

@@ -287,19 +287,18 @@ FreeChain(chain_t* chain)
     }
     if (chain->current_buffer!=NULL) {
       if (chain->current_buffer->frame.allocated_image_bytes!=0) {
-	free(chain->current_buffer->frame.image);
-	chain->current_buffer->frame.image=NULL;
-	chain->current_buffer->frame.allocated_image_bytes=0;
+        free(chain->current_buffer->frame.image);
+        chain->current_buffer->frame.image=NULL;
+        chain->current_buffer->frame.allocated_image_bytes=0;
       }
       free(chain->current_buffer);
       chain->current_buffer=NULL;
     }
     if (chain->next_buffer!=NULL) {
       if (chain->next_buffer->frame.allocated_image_bytes!=0) {
-	//fprintf(stderr,"0x%x\n",chain->next_buffer->frame.image);
-	free(chain->next_buffer->frame.image);
-	chain->next_buffer->frame.image=NULL;
-	chain->next_buffer->frame.allocated_image_bytes=0;
+        free(chain->next_buffer->frame.image);
+        chain->next_buffer->frame.image=NULL;
+        chain->next_buffer->frame.allocated_image_bytes=0;
       }
       free(chain->next_buffer);
       chain->next_buffer=NULL;

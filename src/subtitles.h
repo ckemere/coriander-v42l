@@ -21,6 +21,7 @@
 #ifndef _SUBTITLES_
 #define _SUBTITLES_
 
+char * subtitle_header(char * subtitle);
 char * new_subtitle(int n, float fps, char *time_string, char * subtitle);
 
 #endif /* _SUBTITLES_ */

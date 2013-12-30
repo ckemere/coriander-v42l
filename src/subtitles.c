@@ -31,3 +31,12 @@ char * new_subtitle(int n, float fps, char *time_string, char * subtitle) {
 
   return subtitle;
 }
+
+char * subtitle_header(char * subtitle) {
+
+  sprintf(subtitle, "### BEGIN HEADER\nFRAME TIMESTAMP FILE\nFor each"
+        "frame: seconds since epoch [UINT64], fractional nanoseconds [UINT64]\n"
+        "###END HEADER\n");
+
+  return subtitle;
+}

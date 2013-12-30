@@ -134,7 +134,8 @@ GetCameraData(camera_t* cam) {
       break;
 #ifdef HAVE_FFMPEG
   case SAVE_FORMAT_MPEG:
-      sprintf(cam->prefs.save_filename_ext,"mpeg");
+      sprintf(cam->prefs.save_filename_ext,"mp4");
+      //sprintf(cam->prefs.save_filename_ext,"mpeg");
       break;
 #endif
   default:

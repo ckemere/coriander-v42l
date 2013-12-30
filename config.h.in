@@ -12,6 +12,9 @@
 /* Define to 1 if you have the `dcgettext' function. */
 #undef HAVE_DCGETTEXT
 
+/* defined if ffmpeg is available */
+#undef HAVE_FFMPEG
+
 /* defined if libftp is available */
 #undef HAVE_FTPLIB
 
