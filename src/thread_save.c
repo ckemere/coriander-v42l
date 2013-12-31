@@ -460,7 +460,8 @@ InitVideoFile(chain_t *save_service, FILE *fd, char *filename_out)
     strcpy(info->subtitle, filename_out);
     strcpy(strrchr(info->subtitle,'.'), ".sub");
     fprintf(stderr, "Recording frame timestamps to: %s\n", info->subtitle);
-    info->fdts = open(info->subtitle, O_CREAT | O_WRONLY | O_SYNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+    info->fdts = open(info->subtitle, O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+    //info->fdts = open(info->subtitle, O_CREAT | O_WRONLY | O_SYNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 
 
     subtitle_header(info->subtitle);
@@ -643,8 +644,6 @@ SaveMPEGFrame(chain_t *save_service)
     sws_scale(sws_ctx,
         info->tmp_picture->data, info->tmp_picture->linesize,
         0, c->height, info->picture->data, info->picture->linesize);
-        // save_service->current_buffer->frame.image, info->tmp_picture->linesize,
-        // 0, c->height, info->picture->data, info->picture->linesize);
     break;
   default:
     fprintf(stderr,"unsupported color format!!\n");
@@ -656,8 +655,8 @@ SaveMPEGFrame(chain_t *save_service)
     write_video_frame(info->oc, info->video_st, info->picture);
     
     /* Save time stamp */
-    write(info->fdts, &(save_service->current_buffer->frame_sec), sizeof(uint64_t));
-    write(info->fdts, &(save_service->current_buffer->frame_nsec), sizeof(uint64_t));
+    write(info->fdts, &save_service->current_buffer->frame_sec, sizeof(uint64_t));
+    write(info->fdts, &save_service->current_buffer->frame_nsec, sizeof(uint64_t));
     //new_subtitle(save_service->processed_frames, save_service->fps,
 		 //save_service->current_buffer->captime_string, info->subtitle);
     //printf("%s", info->subtitle);
